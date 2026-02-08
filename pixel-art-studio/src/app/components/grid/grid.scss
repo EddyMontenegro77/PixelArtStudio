@@ -1,0 +1,18 @@
+.grid-container {
+  --pixel-size: 20px;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+
+  .grid-row {
+    display: flex;
+    flex-flow: row nowrap;
+
+    .grid-pixel {
+      width: var(--pixel-size);
+      height: var(--pixel-size);
+      border: 1px solid #ccc;
+    }
+  }
+}

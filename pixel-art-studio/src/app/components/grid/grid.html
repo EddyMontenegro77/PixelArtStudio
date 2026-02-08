@@ -1,0 +1,18 @@
+<div class="grid-container" (wheel)="onWheel($event)">
+  @for (row of grid.getPixels(); track $index; let rowIndex = $index) {
+    <div class="grid-row">
+      @for (column of row; track $index; let columnIndex = $index) {
+        <div
+          class="grid-pixel"
+          (click)="onPixelClick($event, rowIndex, columnIndex)"
+          (pointerdown)="onPointerDown($event)"
+          (pointerup)="onPointerUp($event)"
+          (pointerover)="onPointerOver($event, rowIndex, columnIndex)"
+          [style.background-color]="column"
+          [style.width.px]="getPixelSize()"
+          [style.height.px]="getPixelSize()"
+        ></div>
+      }
+    </div>
+  }
+</div>
