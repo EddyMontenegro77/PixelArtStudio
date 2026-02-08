@@ -12,7 +12,7 @@ export class GridModel {
   initializeGrid() {
     this.pixels = new Array(this.height)
       .fill(null)
-      .map(() => new Array(this.width).fill('#FFFFFFFF'));
+      .map(() => new Array(this.width).fill('transparent'));
   }
 
   getWidth(): number {

@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Grid } from './components/grid/grid';
+import { Canvas } from './components/canvas/canvas';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Grid],
+  imports: [RouterOutlet, Canvas],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

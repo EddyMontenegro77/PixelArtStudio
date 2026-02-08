@@ -1,0 +1,11 @@
+.canvas-container {
+  border: 1px solid #000;
+  border: 1px solid #000;
+  overflow: auto;
+  max-width: 100vw;
+  max-height: 100vh;
+  canvas {
+    display: block;
+    image-rendering: pixelated;
+  }
+}
