@@ -1,4 +1,4 @@
-import { Tool, ToolContext } from './tool.interface';
+import { Tool, ToolContext } from '../../types/tool.interface';
 import { getGridCoordinatesFromEvent } from '../../components/canvas/canvas.utils';
 import { StrokeBatcher } from '../stroke-bactcher.model';
 import { forEachBrushPixel } from './brush.utils';

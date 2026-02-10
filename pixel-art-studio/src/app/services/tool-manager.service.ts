@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Tool, ToolContext, ToolType } from '../models/tools/tool.interface';
+import { Tool, ToolContext, ToolType } from '../types/tool.interface';
 import { PencilTool } from '../models/tools/pencil-tool.model';
 import { ProjectService } from './project.service';
 import { Subject } from 'rxjs';

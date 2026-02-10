@@ -1,4 +1,4 @@
-import { ToolContext } from '../../models/tools/tool.interface';
+import { ToolContext } from '../../types/tool.interface';
 
 export function getGridCoordinates(
   xOffset: number,
