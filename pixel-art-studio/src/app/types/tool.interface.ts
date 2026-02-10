@@ -1,6 +1,6 @@
-import { LayerModel } from '../layer.model';
-import { HistoryManager } from '../history-manager.model';
-import { FrameModel } from '../frame.model';
+import { LayerModel } from '../models/layer.model';
+import { HistoryManager } from '../models/history-manager.model';
+import { FrameModel } from '../models/frame.model';
 
 export enum ToolType {
   PENCIL = 'PENCIL',
