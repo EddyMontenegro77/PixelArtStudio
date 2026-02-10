@@ -1,6 +1,6 @@
 export class GridModel {
-  private width: number = 16;
-  private height: number = 16;
+  private width: number;
+  private height: number;
   private pixels: string[][] = [];
 
   constructor(width: number = 16, height: number = 16) {
@@ -31,11 +31,11 @@ export class GridModel {
     this.pixels = pixels;
   }
 
-  getPixelColor(row: number, column: number): string {
-    return this.pixels[row][column];
+  getPixelColor(x: number, y: number): string {
+    return this.pixels[x][y];
   }
 
-  setPixelColor(row: number, column: number, color: string): void {
-    this.pixels[row][column] = color;
+  setPixelColor(x: number, y: number, color: string): void {
+    this.pixels[x][y] = color;
   }
 }

@@ -1,18 +1,20 @@
-import Action from '../types/Action';
+import Action from '../types/action';
 
-class HistoryManager {
-  private undoStack: any[] = [];
-  private redoStack: any[] = [];
+export class HistoryManager {
+  private undoStack: Action[] = [];
+  private redoStack: Action[] = [];
 
-  do(action: Action): void {
+  constructor() {}
+
+  execute(action: Action): void {
     this.undoStack.push(action);
-    this.redoStack.length = 0; // Clear redo stack for consistency
+    this.redoStack = []; // Clear redo stack for consistency
   }
 
   undo(): void {
     if (this.undoStack.length > 0) {
       const action: Action = this.undoStack.pop()!;
-      // Undo action
+      action.undo();
       this.redoStack.push(action);
     }
   }
@@ -20,7 +22,7 @@ class HistoryManager {
   redo(): void {
     if (this.redoStack.length > 0) {
       const action: Action = this.redoStack.pop()!;
-      // Redo action
+      action.redo();
       this.undoStack.push(action);
     }
   }

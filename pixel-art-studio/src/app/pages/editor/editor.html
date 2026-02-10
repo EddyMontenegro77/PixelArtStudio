@@ -1,0 +1,12 @@
+<div class="editor-container">
+  @if (!isInitialized) {
+    <div class="initialization-panel">
+      <input type="text" [(ngModel)]="projectName" placeholder="Project name" minlength="1" />
+      <input type="number" [(ngModel)]="width" placeholder="Width" min="1" />
+      <input type="number" [(ngModel)]="height" placeholder="Height" min="1" />
+      <button (click)="initializeCanvas()">Create Canvas</button>
+    </div>
+  } @else {
+    <app-canvas></app-canvas>
+  }
+</div>
