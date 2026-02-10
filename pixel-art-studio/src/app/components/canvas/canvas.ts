@@ -73,6 +73,10 @@ export class Canvas {
         this.renderFrame();
       }
     });
+
+    this.toolManagerService.historyChanged$.subscribe(() => {
+      this.renderFrame();
+    });
   }
 
   ngAfterViewInit() {

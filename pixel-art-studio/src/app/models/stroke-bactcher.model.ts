@@ -15,15 +15,16 @@ export class StrokeBatcher {
   commit(historyManager: HistoryManager): boolean {
     if (this.actions.length === 0) return false;
 
+    const actions = [...this.actions];
     const batchAction: Action = {
       type: 'PAINT_STROKE',
       undo: () => {
-        for (let actionIndex = this.actions.length - 1; actionIndex >= 0; actionIndex--) {
-          this.actions[actionIndex].undo();
+        for (let actionIndex = actions.length - 1; actionIndex >= 0; actionIndex--) {
+          actions[actionIndex].undo();
         }
       },
       redo: () => {
-        for (const act of this.actions) {
+        for (const act of actions) {
           act.redo();
         }
       },

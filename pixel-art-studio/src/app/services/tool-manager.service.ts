@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { Tool, ToolContext, ToolType } from '../models/tools/tool.interface';
 import { PencilTool } from '../models/tools/pencil-tool.model';
 import { ProjectService } from './project.service';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToolManagerService {
+  historyChanged$ = new Subject<void>();
   private tools: Map<ToolType, Tool> = new Map([[ToolType.PENCIL, new PencilTool()]]);
   private activeTool: Tool = this.tools.get(ToolType.PENCIL)!;
 
@@ -42,6 +44,18 @@ export class ToolManagerService {
 
   private isContextReady(): boolean {
     return !!this.toolContext.activeLayer && !!this.toolContext.historyManager;
+  }
+
+  handleUndo() {
+    if (!this.toolContext.historyManager) return;
+    this.toolContext.historyManager.undo();
+    this.historyChanged$.next();
+  }
+
+  handleRedo() {
+    if (!this.toolContext.historyManager) return;
+    this.toolContext.historyManager.redo();
+    this.historyChanged$.next();
   }
 
   // Delegate events to selected tool
