@@ -36,6 +36,10 @@ export class ToolManagerService {
     this.activeTool = this.tools.get(toolType)!;
   }
 
+  setPixelSize(size: number): void {
+    this.toolContext.pixelSize = size;
+  }
+
   private isContextReady(): boolean {
     return !!this.toolContext.activeLayer && !!this.toolContext.historyManager;
   }

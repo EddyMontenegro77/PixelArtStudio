@@ -1,4 +1,13 @@
-<div class="canvas-container">
+<div
+  class="canvas-container"
+  #canvasContainer
+  (wheel)="onWheel($event)"
+  (pointerdown)="onPanStart($event)"
+  (pointermove)="onPanMove($event)"
+  (pointerup)="onPanEnd()"
+  (pointerleave)="onPanEnd()"
+  [class.panning]="isPanning"
+>
   <canvas
     #gridCanvas
     (pointerdown)="onPointerDown($event)"
