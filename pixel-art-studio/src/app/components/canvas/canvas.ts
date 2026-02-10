@@ -10,6 +10,7 @@ import {
   getCursorContainerPosition,
   updatePanToKeepPointUnderCursor,
 } from './canvas.utils';
+import { getBrushBounds } from '../../models/tools/brush.utils';
 
 @Component({
   selector: 'app-canvas',
@@ -135,20 +136,26 @@ export class Canvas {
     if (!this.canvasContext) return;
     if (this.hoverX === null || this.hoverY === null) return;
 
+    const { startX, startY, size } = getBrushBounds(
+      this.hoverX,
+      this.hoverY,
+      this.toolManagerService.getBrushSize(),
+    );
+
     this.canvasContext.fillStyle = 'rgba(0,0,0,0.15)';
     this.canvasContext.fillRect(
-      this.hoverX * this.pixelSize,
-      this.hoverY * this.pixelSize,
-      this.pixelSize,
-      this.pixelSize,
+      startX * this.pixelSize,
+      startY * this.pixelSize,
+      size * this.pixelSize,
+      size * this.pixelSize,
     );
 
     this.canvasContext.strokeStyle = 'rgba(0,0,0,0.4)';
     this.canvasContext.strokeRect(
-      this.hoverX * this.pixelSize,
-      this.hoverY * this.pixelSize,
-      this.pixelSize,
-      this.pixelSize,
+      startX * this.pixelSize,
+      startY * this.pixelSize,
+      size * this.pixelSize,
+      size * this.pixelSize,
     );
   }
 

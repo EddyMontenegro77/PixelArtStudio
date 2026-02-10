@@ -18,6 +18,7 @@ export class ToolManagerService {
     historyManager: null,
     fillColor: '#000000FF',
     pixelSize: 8,
+    brushSize: 1,
   };
 
   constructor(private projectService: ProjectService) {
@@ -40,6 +41,14 @@ export class ToolManagerService {
 
   setPixelSize(size: number): void {
     this.toolContext.pixelSize = size;
+  }
+
+  setBrushSize(size: number): void {
+    this.toolContext.brushSize = size;
+  }
+
+  getBrushSize(): number {
+    return this.toolContext.brushSize;
   }
 
   private isContextReady(): boolean {

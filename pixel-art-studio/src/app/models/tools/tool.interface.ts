@@ -15,6 +15,7 @@ export interface ToolContext {
   historyManager: HistoryManager | null;
   fillColor: string;
   pixelSize: number;
+  brushSize: number;
 }
 
 export interface Tool {
