@@ -1,0 +1,11 @@
+<div class="toolbar-container">
+  @for (item of tools; track $index) {
+    <app-tool-item
+      [name]="item.tool.name"
+      [icon]="item.tool.icon"
+      [keybind]="toolKeybinds[item.type]"
+      (click)="selectTool(item.type)"
+    >
+    </app-tool-item>
+  }
+</div>

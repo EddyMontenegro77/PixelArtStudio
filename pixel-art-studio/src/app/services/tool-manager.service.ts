@@ -3,6 +3,7 @@ import { Tool, ToolContext, ToolType } from '../types/tool.interface';
 import { PencilTool } from '../models/tools/pencil-tool.model';
 import { ProjectService } from './project.service';
 import { Subject } from 'rxjs';
+import { To } from 'react-router-dom';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +38,10 @@ export class ToolManagerService {
 
   setActiveTool(toolType: ToolType) {
     this.activeTool = this.tools.get(toolType)!;
+  }
+
+  getTools(): { type: ToolType; tool: Tool }[] {
+    return Array.from(this.tools.entries()).map(([type, tool]) => ({ type, tool }));
   }
 
   setPixelSize(size: number): void {

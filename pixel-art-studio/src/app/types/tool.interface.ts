@@ -3,11 +3,23 @@ import { HistoryManager } from '../models/history-manager.model';
 import { FrameModel } from '../models/frame.model';
 
 export enum ToolType {
-  PENCIL = 'PENCIL',
-  ERASER = 'ERASER',
-  FILL = 'FILL',
-  COLOR_PICKER = 'COLOR_PICKER',
+  PENCIL = 'Pencil',
+  ERASER = 'Eraser',
+  FILL = 'Fill',
+  COLOR_PICKER = 'Color Picker',
 }
+
+// Keybinds defined as a map to prevent duplicates
+export const TOOL_KEYBINDS: Record<string, ToolType> = {
+  P: ToolType.PENCIL,
+  E: ToolType.ERASER,
+  F: ToolType.FILL,
+  I: ToolType.COLOR_PICKER,
+};
+
+export const TOOL_KEYBINDS_BY_TYPE: Record<ToolType, string> = Object.fromEntries(
+  Object.entries(TOOL_KEYBINDS).map(([key, type]) => [type, key]),
+) as Record<ToolType, string>;
 
 export interface ToolContext {
   activeFrame: FrameModel | null;

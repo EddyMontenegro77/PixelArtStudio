@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../services/project.service';
 import { Canvas } from '../../components/canvas/canvas';
 import { ToolManagerService } from '../../services/tool-manager.service';
+import { Toolbar } from '../../components/toolbar/toolbar';
 
 @Component({
   selector: 'app-editor',
-  imports: [FormsModule, Canvas],
+  imports: [FormsModule, Canvas, Toolbar],
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
 })
