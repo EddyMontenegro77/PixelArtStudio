@@ -17,5 +17,7 @@ export class Toolbar {
     this.tools = this.toolManagerService.getTools();
   }
 
-  selectTool(type: ToolType) {}
+  selectTool(type: ToolType) {
+    this.toolManagerService.setActiveTool(type);
+  }
 }
