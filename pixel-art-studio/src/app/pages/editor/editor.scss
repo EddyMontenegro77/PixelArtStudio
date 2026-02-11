@@ -1,0 +1,37 @@
+.editor-container {
+  display: flex;
+  flex-flow: column nowrap;
+
+  .settings-bar {
+    justify-self: flex-start;
+  }
+
+  .edition-panel-container {
+    display: flex;
+    flex-flow: row nowrap;
+    position: relative;
+
+    .toolbar {
+      justify-self: flex-start;
+      position: absolute;
+      left: 0;
+      z-index: 2;
+      padding: 1rem;
+    }
+
+    .canvas {
+      margin: 0 auto;
+    }
+
+    .project-bar {
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 2;
+    }
+  }
+
+  .frames-bar {
+    justify-self: flex-end;
+  }
+}

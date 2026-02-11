@@ -1,13 +1,18 @@
-<div class="editor-container">
-  @if (!isInitialized) {
-    <div class="initialization-panel">
-      <input type="text" [(ngModel)]="projectName" placeholder="Project name" minlength="1" />
-      <input type="number" [(ngModel)]="width" placeholder="Width" min="1" />
-      <input type="number" [(ngModel)]="height" placeholder="Height" min="1" />
-      <button (click)="initializeCanvas()">Create Canvas</button>
+@if (!isInitialized) {
+  <div class="initialization-panel">
+    <input type="text" [(ngModel)]="projectName" placeholder="Project name" minlength="1" />
+    <input type="number" [(ngModel)]="width" placeholder="Width" min="1" />
+    <input type="number" [(ngModel)]="height" placeholder="Height" min="1" />
+    <button (click)="initializeCanvas()">Create Canvas</button>
+  </div>
+} @else {
+  <div class="editor-container">
+    <app-settingsbar class="settings-bar"></app-settingsbar>
+    <div class="edition-panel-container">
+      <app-toolbar class="toolbar"></app-toolbar>
+      <app-canvas class="canvas"></app-canvas>
+      <app-projectbar class="project-bar"></app-projectbar>
     </div>
-  } @else {
-    <app-toolbar></app-toolbar>
-    <app-canvas></app-canvas>
-  }
-</div>
+    <app-framesbar class="frames-bar"></app-framesbar>
+  </div>
+}

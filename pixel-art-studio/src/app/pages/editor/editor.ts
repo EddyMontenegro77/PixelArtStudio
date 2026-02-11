@@ -4,10 +4,13 @@ import { ProjectService } from '../../services/project.service';
 import { Canvas } from '../../components/canvas/canvas';
 import { ToolManagerService } from '../../services/tool-manager.service';
 import { Toolbar } from '../../components/toolbar/toolbar';
+import { Projectbar } from '../../components/projectbar/projectbar';
+import { Settingsbar } from '../../components/settingsbar/settingsbar';
+import { Framesbar } from '../../components/framesbar/framesbar';
 
 @Component({
   selector: 'app-editor',
-  imports: [FormsModule, Canvas, Toolbar],
+  imports: [FormsModule, Canvas, Toolbar, Projectbar, Settingsbar, Framesbar],
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
 })

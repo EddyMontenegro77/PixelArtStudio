@@ -1,4 +1,22 @@
 :root {
   margin: 0;
   padding: 0;
+  --bg: #f6f6f6;
+  --panel: #ffffff;
+  --text: #111111;
+  --accent: #ff5c5c;
+}
+
+[data-theme='dark'] {
+  --bg: #212121;
+  --panel: #1e1e1e;
+  --text: #ffffff;
+  --accent: #ff8a00;
+}
+
+[data-theme='light'] {
+  --bg: #f6f6f6;
+  --panel: #ffffff;
+  --text: #111111;
+  --accent: #ff5c5c;
 }
