@@ -1,0 +1,18 @@
+.layer-container {
+  cursor: pointer;
+}
+
+.layer-container:hover {
+  background-color: #212121;
+  color: white;
+}
+
+.layer-container.active {
+  background-color: #212121;
+  color: white;
+}
+
+.layer-icon {
+  width: 1rem;
+  height: 1rem;
+}

@@ -1,14 +1,41 @@
-<div class="layer-container">
-  <button class="visibility-button" (click)="toggleVisibility()">
-    <img />
+<div class="layer-container" [class.active]="isActive()" (click)="selectLayer()">
+  <button class="visibility-button" (click)="handleToggleVisibility($event)">
+    @if (isLayerVisible()) {
+      <img
+        class="layer-icon"
+        src="icons/visible_black.svg"
+        alt="visible icon"
+        title="Toggle Visibility"
+      />
+    } @else {
+      <img
+        class="layer-icon"
+        src="icons/not_visible_black.svg"
+        alt="not visible icon"
+        title="Toggle Visibility"
+      />
+    }
   </button>
-  <label class="layer-name"></label>
-  <div class="move-layer-buttons">
-    <button class="move-up-layer" (click)="moveLayerUp()">
-      <img />
+  <label class="layer-name">{{ layerName() }}</label>
+  <div class="layer-buttons">
+    <button class="move-up-layer" (click)="handleMoveLayerUp($event)">
+      <img
+        class="layer-icon"
+        src="icons/arrow_up_black.svg"
+        alt="move up icon"
+        title="Move layer up"
+      />
     </button>
-    <button class="move-down-layer" (click)="moveLayerDown()">
-      <img />
+    <button class="move-down-layer" (click)="handleMoveLayerDown($event)">
+      <img
+        class="layer-icon"
+        src="icons/arrow_down_black.svg"
+        alt="move down icon"
+        title="Move layer down"
+      />
+    </button>
+    <button class="remove-layer-btn" (click)="removeLayer($event)">
+      <img class="layer-icon" src="icons/minus_black.svg" alt="Remove layer" title="Remove layer" />
     </button>
   </div>
 </div>

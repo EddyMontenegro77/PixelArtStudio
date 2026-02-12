@@ -1,8 +1,24 @@
 <div class="layers-container">
-  <span class="frame-indicator">Frame:</span>
-  <div class="layers-display"></div>
+  <span class="frame-indicator">Layers</span>
+  <div class="layers-display">
+    @for (layer of layers; track $index) {
+      <app-layer
+        [layerId]="layer.getId()"
+        [layerName]="layer.getName()"
+        [isLayerVisible]="layer.isVisible()"
+        [isActive]="layer.getId() === activeLayerId"
+        (select)="selectLayer($event)"
+        (toggleVisibility)="toggleVisibility($event)"
+        (moveUp)="moveLayerUp($event)"
+        (moveDown)="moveLayerDown($event)"
+        (remove)="removeLayer($event)"
+      >
+      </app-layer>
+    }
+  </div>
   <div class="bottom-menu">
-    <button class="add-layer-btn" (click)="addLayer()"></button>
-    <button class="remove-layer-btn" (click)="removeLayer()"></button>
+    <button class="add-layer-btn" (click)="addLayer()">
+      <img class="layer-icon" src="icons/plus_black.svg" alt="Add layer" title="Add Layer" />
+    </button>
   </div>
 </div>

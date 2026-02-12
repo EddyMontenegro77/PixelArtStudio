@@ -57,6 +57,23 @@ export class ProjectService {
     this.executeStructuralAction('REMOVE_LAYER', () => activeFrame.removeLayer(layerId));
   }
 
+  moveLayerUpInActiveFrame(layerId: number): void {
+    const activeFrame = this.getActiveFrame();
+    this.executeStructuralAction('MOVE_LAYER_UP', () => activeFrame.moveLayerUp(layerId));
+  }
+
+  moveLayerDownInActiveFrame(layerId: number): void {
+    const activeFrame = this.getActiveFrame();
+    this.executeStructuralAction('MOVE_LAYER_DOWN', () => activeFrame.moveLayerDown(layerId));
+  }
+
+  toggleLayerVisibilityInActiveFrame(layerId: number): void {
+    const activeFrame = this.getActiveFrame();
+    this.executeStructuralAction('TOGGLE_LAYER_VISIBILITY', () =>
+      activeFrame.toggleLayerVisibility(layerId),
+    );
+  }
+
   getActiveFrame(): FrameModel {
     const project = this.getProject();
     return project.getActiveFrame();

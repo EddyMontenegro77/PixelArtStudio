@@ -48,6 +48,28 @@ export class FrameModel {
     }
   }
 
+  moveLayerUp(layerId: number): void {
+    const index = this.findLayerIndex(layerId);
+    if (index <= 0) return;
+    const [layer] = this.layers.splice(index, 1);
+    this.layers.splice(index - 1, 0, layer);
+  }
+
+  moveLayerDown(layerId: number): void {
+    const index = this.findLayerIndex(layerId);
+    if (index < 0 || index >= this.layers.length - 1) return;
+    const [layer] = this.layers.splice(index, 1);
+    this.layers.splice(index + 1, 0, layer);
+  }
+
+  toggleLayerVisibility(layerId: number): void {
+    const layer = this.layers.find((currentLayer) => currentLayer.getId() === layerId);
+    if (!layer) {
+      throw new Error(`Layer ${layerId} not found in frame ${this.frameId}`);
+    }
+    layer.setVisible(!layer.isVisible());
+  }
+
   setDuration(ms: number): void {
     this.msDuration = ms;
   }
@@ -88,5 +110,9 @@ export class FrameModel {
   restoreSnapshot(snapshot: FrameSnapshot): void {
     this.layers = [...snapshot.layers];
     this.activeLayerId = snapshot.activeLayerId;
+  }
+
+  private findLayerIndex(layerId: number): number {
+    return this.layers.findIndex((layer) => layer.getId() === layerId);
   }
 }

@@ -5,7 +5,7 @@ import { forEachBrushPixel } from './brush.utils';
 
 export class PencilTool implements Tool {
   name: string = 'Pencil';
-  icon: string = 'assets/icons/pencil.svg';
+  icon: string = 'icons/pencil_black.svg';
   cursor: string = 'crosshair';
   isPointerDown: boolean = false;
   private strokeBatcher: StrokeBatcher = new StrokeBatcher();
