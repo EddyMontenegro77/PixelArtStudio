@@ -1,5 +1,10 @@
 import { LayerModel } from './layer.model';
 
+export interface FrameSnapshot {
+  layers: LayerModel[];
+  activeLayerId: number;
+}
+
 export class FrameModel {
   private static frameCounter: number = 0;
   private frameId: number;
@@ -26,13 +31,20 @@ export class FrameModel {
   addLayer(): void {
     const newLayer = new LayerModel(this.width, this.height, `Layer ${this.layers.length + 1}`);
     this.layers.push(newLayer);
-    this.activeLayerId = newLayer.getId();
+    this.setActiveLayer(newLayer.getId());
   }
 
   removeLayer(layerId: number): void {
+    const wasActive = this.activeLayerId === layerId;
     this.layers = this.layers.filter((layer) => layer.getId() !== layerId);
-    if (this.activeLayerId === layerId && this.layers.length > 0) {
-      this.activeLayerId = this.layers[0].getId();
+
+    if (this.layers.length === 0) {
+      this.addLayer();
+      return;
+    }
+
+    if (wasActive) {
+      this.setActiveLayer(this.layers[0].getId());
     }
   }
 
@@ -59,6 +71,22 @@ export class FrameModel {
   }
 
   setActiveLayer(layerId: number): void {
+    const exists = this.layers.some((layer) => layer.getId() === layerId);
+    if (!exists) {
+      throw new Error(`Layer ${layerId} not found in frame ${this.frameId}`);
+    }
     this.activeLayerId = layerId;
+  }
+
+  createSnapshot(): FrameSnapshot {
+    return {
+      layers: [...this.layers],
+      activeLayerId: this.activeLayerId,
+    };
+  }
+
+  restoreSnapshot(snapshot: FrameSnapshot): void {
+    this.layers = [...snapshot.layers];
+    this.activeLayerId = snapshot.activeLayerId;
   }
 }

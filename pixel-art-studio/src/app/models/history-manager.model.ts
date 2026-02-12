@@ -3,10 +3,14 @@ import Action from '../types/action';
 export class HistoryManager {
   private undoStack: Action[] = [];
   private redoStack: Action[] = [];
+  private readonly maxHistorySize = 75;
 
   constructor() {}
 
   execute(action: Action): void {
+    if (this.undoStack.length >= this.maxHistorySize) {
+      this.undoStack.shift();
+    }
     this.undoStack.push(action);
     this.redoStack = []; // Clear redo stack for consistency
   }
