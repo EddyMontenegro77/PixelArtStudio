@@ -1,6 +1,11 @@
 .editor-container {
   display: flex;
   flex-flow: column nowrap;
+  gap: 0.5rem;
+
+  .theme-toggle {
+    align-self: flex-start;
+  }
 
   .settings-bar {
     justify-self: flex-start;
@@ -33,5 +38,11 @@
 
   .frames-bar {
     justify-self: flex-end;
+  }
+}
+
+.initialization-panel {
+  .theme-toggle {
+    margin-bottom: 0.5rem;
   }
 }

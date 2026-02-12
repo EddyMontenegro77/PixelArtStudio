@@ -7,6 +7,7 @@ import { Toolbar } from '../../components/toolbar/toolbar';
 import { Projectbar } from '../../components/projectbar/projectbar';
 import { Settingsbar } from '../../components/settingsbar/settingsbar';
 import { Framesbar } from '../../components/framesbar/framesbar';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-editor',
@@ -19,11 +20,15 @@ export class Editor {
   width: number = 32;
   height: number = 32;
   isInitialized: boolean = false;
+  currentTheme: 'light' | 'dark';
 
   constructor(
     private projectService: ProjectService,
     private toolManagerService: ToolManagerService,
-  ) {}
+    private themeService: ThemeService,
+  ) {
+    this.currentTheme = this.themeService.getTheme();
+  }
 
   initializeCanvas(): void {
     if (this.width > 0 && this.height > 0 && this.projectName.length > 0) {
@@ -47,5 +52,9 @@ export class Editor {
       console.log('redo()');
       this.toolManagerService.handleRedo();
     }
+  }
+
+  toggleTheme(): void {
+    this.currentTheme = this.themeService.toggleTheme();
   }
 }
