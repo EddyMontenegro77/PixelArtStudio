@@ -1,1 +1,28 @@
-<p>palettes works!</p>
+<div class="palettes-container">
+  <label class="palette-name-label" for="palette-name">Palette</label>
+  <input
+    id="palette-name"
+    class="palette-name-input"
+    type="text"
+    [(ngModel)]="paletteName"
+    (blur)="updatePaletteName()"
+  />
+
+  <div class="color-actions">
+    <input class="selected-color-input" type="color" [(ngModel)]="selectedColor" />
+    <button type="button" (click)="addSelectedColor()">Add color</button>
+  </div>
+
+  <div class="colors-grid">
+    @for (color of colors; track $index) {
+      <app-color-cell
+        [color]="color"
+        [index]="$index"
+        [isSelected]="color === selectedColor"
+        (select)="selectColor($event)"
+        (remove)="removeColor($event)"
+      >
+      </app-color-cell>
+    }
+  </div>
+</div>

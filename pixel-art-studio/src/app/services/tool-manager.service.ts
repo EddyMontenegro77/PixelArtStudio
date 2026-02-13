@@ -3,7 +3,6 @@ import { Tool, ToolContext, ToolType } from '../types/tool.interface';
 import { PencilTool } from '../models/tools/pencil-tool.model';
 import { ProjectService } from './project.service';
 import { Subject } from 'rxjs';
-import { To } from 'react-router-dom';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +53,14 @@ export class ToolManagerService {
 
   getBrushSize(): number {
     return this.toolContext.brushSize;
+  }
+
+  setFillColor(color: string): void {
+    this.toolContext.fillColor = color;
+  }
+
+  getFillColor(): string {
+    return this.toolContext.fillColor;
   }
 
   private isContextReady(): boolean {

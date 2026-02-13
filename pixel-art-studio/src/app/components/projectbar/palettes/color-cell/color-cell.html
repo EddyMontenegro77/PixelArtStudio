@@ -1,0 +1,10 @@
+<div
+  class="color-cell-container"
+  [class.selected]="isSelected()"
+  [style.backgroundColor]="color()"
+  (click)="onSelect()"
+>
+  <button type="button" class="remove-color-btn" (click)="onRemove(); $event.stopPropagation()">
+    x
+  </button>
+</div>
