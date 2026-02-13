@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { GridModel } from '../../models/grid.model';
 import { ToolManagerService } from '../../services/tool-manager.service';
 import { ProjectService } from '../../services/project.service';
@@ -11,6 +11,7 @@ import {
   updatePanToKeepPointUnderCursor,
 } from './canvas.utils';
 import { getBrushBounds } from '../../models/tools/brush.utils';
+import { renderCheckerboard, renderVisibleLayers } from './canvas-render.utils';
 
 @Component({
   selector: 'app-canvas',
@@ -102,34 +103,9 @@ export class Canvas {
   renderFrame(): void {
     if (!this.canvasContext || !this.activeFrame) return;
 
-    this.renderCheckerboard();
-
-    const layerList = this.activeFrame.getLayers();
-    layerList.forEach((layer) => {
-      if (layer.isVisible()) this.renderGrid(layer.getGrid());
-    });
+    renderCheckerboard(this.canvasContext, this.width, this.height, this.pixelSize);
+    renderVisibleLayers(this.canvasContext, this.activeFrame, this.pixelSize);
     this.renderHover();
-  }
-
-  renderGrid(grid: GridModel): void {
-    const pixels = grid.getPixels();
-    for (let yIndex = 0; yIndex < grid.getHeight(); yIndex++) {
-      for (let xIndex = 0; xIndex < grid.getWidth(); xIndex++) {
-        const color = pixels[xIndex][yIndex];
-        this.renderPixel(xIndex, yIndex, color);
-      }
-    }
-  }
-
-  renderPixel(xIndex: number, yIndex: number, color: string): void {
-    if (!this.canvasContext || color == 'transparent') return;
-    this.canvasContext.fillStyle = color;
-    this.canvasContext.fillRect(
-      xIndex * this.pixelSize,
-      yIndex * this.pixelSize,
-      this.pixelSize,
-      this.pixelSize,
-    );
   }
 
   renderHover(): void {
@@ -157,26 +133,6 @@ export class Canvas {
       size * this.pixelSize,
       size * this.pixelSize,
     );
-  }
-
-  renderCheckerboard(): void {
-    if (!this.canvasContext) return;
-
-    const light = '#ffffff';
-    const dark = '#e0e0e0';
-
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        const isDark = (x + y) % 2 === 0;
-        this.canvasContext.fillStyle = isDark ? dark : light;
-        this.canvasContext.fillRect(
-          x * this.pixelSize,
-          y * this.pixelSize,
-          this.pixelSize,
-          this.pixelSize,
-        );
-      }
-    }
   }
 
   // Event handlers
