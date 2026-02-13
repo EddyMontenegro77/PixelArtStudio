@@ -6,6 +6,7 @@ import { FrameModel, FrameSnapshot } from '../models/frame.model';
 import { LayerModel } from '../models/layer.model';
 import Action from '../types/action';
 import { ProjectSnapshot } from '../models/project.model';
+import { PaletteModel } from '../models/palette.model';
 
 type ProjectState = {
   projectSnapshot: ProjectSnapshot;
@@ -93,6 +94,17 @@ export class ProjectService {
   setActiveLayer(layerId: number): void {
     const activeFrame = this.getActiveFrame();
     activeFrame.setActiveLayer(layerId);
+    this.emitProjectUpdate();
+  }
+
+  getActivePalette(): PaletteModel {
+    const project = this.getProject();
+    return project.getPalette();
+  }
+
+  updateActivePalette(newPalette: PaletteModel): void {
+    const project = this.getProject();
+    project.setPalette(newPalette);
     this.emitProjectUpdate();
   }
 

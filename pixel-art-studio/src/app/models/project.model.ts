@@ -1,13 +1,16 @@
 import { FrameModel } from './frame.model';
+import { PaletteModel, PaletteSnapshot } from './palette.model';
 
 export interface ProjectSnapshot {
   frames: FrameModel[];
   activeFrameId: number;
+  palette: PaletteSnapshot;
 }
 
 export class ProjectModel {
   name: string;
   frames: FrameModel[] = [];
+  palette: PaletteModel = new PaletteModel('Project Palette');
   activeFrameId: number;
   width: number;
   height: number;
@@ -62,15 +65,25 @@ export class ProjectModel {
     this.activeFrameId = frameId;
   }
 
+  getPalette(): PaletteModel {
+    return this.palette;
+  }
+
+  setPalette(newPalette: PaletteModel) {
+    this.palette = newPalette;
+  }
+
   createSnapshot(): ProjectSnapshot {
     return {
       frames: [...this.frames],
       activeFrameId: this.activeFrameId,
+      palette: this.palette.createSnapshot(),
     };
   }
 
   restoreSnapshot(snapshot: ProjectSnapshot): void {
     this.frames = [...snapshot.frames];
     this.activeFrameId = snapshot.activeFrameId;
+    this.palette.restoreSnapshot(snapshot.palette);
   }
 }
