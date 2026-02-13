@@ -1,9 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { GridModel } from '../../models/grid.model';
 import { ToolManagerService } from '../../services/tool-manager.service';
 import { ProjectService } from '../../services/project.service';
 import { FrameModel } from '../../models/frame.model';
-import { LayerModel } from '../../models/layer.model';
 import { CanvasZoomService } from '../../services/canvas-zoom.service';
 import {
   getCursorCanvasPosition,
@@ -43,7 +41,6 @@ export class Canvas {
   // Event Attributes
   isPointerDown: boolean = false;
   activeFrame!: FrameModel;
-  activeLayer!: LayerModel;
 
   @ViewChild('gridCanvas') gridCanvas!: ElementRef<HTMLCanvasElement>;
 
@@ -67,7 +64,6 @@ export class Canvas {
       this.width = project.width;
       this.height = project.height;
       this.activeFrame = project.getActiveFrame();
-      this.activeLayer = this.activeFrame.getActiveLayer();
 
       if (this.isViewReady) {
         this.setInitialZoom();
@@ -167,7 +163,7 @@ export class Canvas {
     this.hoverX = Math.floor(canvasX / this.pixelSize);
     this.hoverY = Math.floor(canvasY / this.pixelSize);
 
-    const changed = this.toolManagerService.onPointerMove(event);
+    this.toolManagerService.onPointerMove(event);
     this.renderFrame();
   }
 

@@ -36,9 +36,15 @@
     <img src="icons/plus_black.svg" alt="Add frame" />
     Add frame
   </button>
-  <button type="button" class="toggle-play-animation-btn" (click)="togglePlaying()">
+  <button
+    type="button"
+    class="toggle-play-animation-btn"
+    (click)="togglePlaying()"
+    [attr.aria-pressed]="isPlaying"
+    [title]="isPlaying ? 'Stop preview' : 'Play preview'"
+  >
     <img src="icons/play_pause_black.svg" alt="play-pause icon" />
   </button>
 
-  <app-animation-preview></app-animation-preview>
+  <app-animation-preview (playbackChanged)="onPlaybackChanged($event)"></app-animation-preview>
 </div>

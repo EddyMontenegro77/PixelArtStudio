@@ -46,6 +46,10 @@ export class Framesbar {
 
   togglePlaying(): void {
     if (!this.animationPreview) return;
-    this.isPlaying = this.animationPreview.togglePlayback();
+    this.animationPreview.togglePlayback();
+  }
+
+  onPlaybackChanged(isPlaying: boolean): void {
+    this.isPlaying = isPlaying;
   }
 }
