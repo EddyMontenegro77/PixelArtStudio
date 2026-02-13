@@ -1,0 +1,61 @@
+.framesbar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.frames-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.frame-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #999;
+  border-radius: 0.25rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.frame-item.active {
+  border-color: #111;
+  background: #f0f0f0;
+}
+
+.duration-input-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.duration-input {
+  width: 4.2rem;
+}
+
+.remove-frame-btn {
+  border: 1px solid #999;
+  border-radius: 999px;
+  width: 1.1rem;
+  height: 1.1rem;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+}
+
+.add-frame-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+}
+
+.add-frame-btn img {
+  width: 1rem;
+  height: 1rem;
+}

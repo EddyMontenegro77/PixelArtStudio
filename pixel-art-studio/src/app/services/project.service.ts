@@ -80,10 +80,30 @@ export class ProjectService {
     return project.getActiveFrame();
   }
 
+  getFrames(): FrameModel[] {
+    return [...this.getProject().frames];
+  }
+
+  getActiveFrameId(): number {
+    return this.getProject().getActiveFrameId();
+  }
+
   setActiveFrame(frameId: number): void {
     const project = this.getProject();
     project.setActiveFrameId(frameId);
     this.emitProjectUpdate();
+  }
+
+  setFrameDuration(frameId: number, ms: number): void {
+    const project = this.getProject();
+    const duration = this.normalizeFrameDuration(ms);
+    this.executeStructuralAction('SET_FRAME_DURATION', () => {
+      const frame = project.frames.find((currentFrame) => currentFrame.getId() === frameId);
+      if (!frame) {
+        throw new Error(`Frame ${frameId} not found in project`);
+      }
+      frame.setDuration(duration);
+    });
   }
 
   getActiveLayer(): LayerModel {
@@ -155,5 +175,10 @@ export class ProjectService {
         frame.restoreSnapshot(frameSnapshot);
       }
     }
+  }
+
+  private normalizeFrameDuration(ms: number): number {
+    if (!Number.isFinite(ms)) return 100;
+    return Math.max(20, Math.min(10000, Math.floor(ms)));
   }
 }
