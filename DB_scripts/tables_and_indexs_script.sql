@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS app_user (
 	user_id BIGSERIAL PRIMARY KEY,
 	username varchar(50) NOT NULL,
 	password_hash TEXT NOT NULL,
-	email varchar(50) NOT NULL,
+	email varchar(50) UNIQUE NOT NULL,
 	created_at timestamptz NOT NULL DEFAULT NOW(),
 	updated_at timestamptz NOT NULL DEFAULT NOW()
 );
