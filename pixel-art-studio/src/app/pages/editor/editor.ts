@@ -41,7 +41,6 @@ export class Editor {
   handleKeyboard(event: KeyboardEvent) {
     if (event.ctrlKey && event.key === 'z') {
       event.preventDefault();
-      console.log('undo()');
       this.toolManagerService.handleUndo();
     }
     if (
@@ -49,7 +48,6 @@ export class Editor {
       (event.ctrlKey && event.key === 'y')
     ) {
       event.preventDefault();
-      console.log('redo()');
       this.toolManagerService.handleRedo();
     }
   }
