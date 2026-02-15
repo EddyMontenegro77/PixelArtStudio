@@ -99,12 +99,11 @@ export class ExportService {
       const rgba = new Uint8Array(imageData.data.buffer); // Pixels as RGBA array
       const palette = quantize(rgba, 256);
       const indexedPixels = applyPalette(rgba, palette);
-      const delayMs = Math.max(10, frame.getDuration());
-      const delayCentiseconds = Math.max(1, Math.round(delayMs / 10));
+      const delayMs = Math.max(20, frame.getDuration());
 
       encoder.writeFrame(indexedPixels, width, height, {
         palette,
-        delay: delayCentiseconds,
+        delay: delayMs,
       });
     }
 
