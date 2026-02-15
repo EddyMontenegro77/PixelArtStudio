@@ -38,16 +38,33 @@ export class Editor {
   }
 
   @HostListener('window:keydown', ['$event'])
-  handleKeyboard(event: KeyboardEvent) {
-    if (event.ctrlKey && event.key === 'z') {
-      event.preventDefault();
-      this.toolManagerService.handleUndo();
-    }
+  handleKeyboard(event: KeyboardEvent): void {
+    const target = event.target as HTMLElement | null;
     if (
-      (event.ctrlKey && event.ctrlKey && event.key == 'Z') ||
-      (event.ctrlKey && event.key === 'y')
+      target &&
+      (target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable)
     ) {
+      return;
+    }
+
+    const ctrlOrMeta = event.ctrlKey || event.metaKey;
+    const key = event.key.toLowerCase();
+    const isUndo = ctrlOrMeta && !event.shiftKey && key === 'z';
+    const isRedo = ctrlOrMeta && ((event.shiftKey && key === 'z') || key === 'y');
+
+    if (isUndo) {
       event.preventDefault();
+      event.stopPropagation();
+      this.toolManagerService.handleUndo();
+      return;
+    }
+
+    if (isRedo) {
+      event.preventDefault();
+      event.stopPropagation();
       this.toolManagerService.handleRedo();
     }
   }
