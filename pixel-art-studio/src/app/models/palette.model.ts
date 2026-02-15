@@ -9,7 +9,7 @@ export class PaletteModel {
 
   constructor(name: string) {
     this.name = name;
-    this.colors = ['#000000FF', '#ffffffff'];
+    this.colors = ['#000000FF', '#ffffffff', '#FF0000FF', '#00FF00FF', '#0000FFFF'];
   }
 
   setPaletteName(newName: string): void {
