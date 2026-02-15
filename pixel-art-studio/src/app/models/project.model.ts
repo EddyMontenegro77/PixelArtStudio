@@ -47,6 +47,14 @@ export class ProjectModel {
     }
   }
 
+  getWidth(): number {
+    return this.width;
+  }
+
+  getHeight(): number {
+    return this.height;
+  }
+
   getActiveFrame(): FrameModel {
     const frame = this.frames.find((frame) => frame.getId() === this.activeFrameId);
     if (!frame) throw new Error('No active frame found');

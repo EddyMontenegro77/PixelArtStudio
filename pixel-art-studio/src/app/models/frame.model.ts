@@ -78,6 +78,14 @@ export class FrameModel {
     return this.msDuration;
   }
 
+  getWidth(): number {
+    return this.width;
+  }
+
+  getHeight(): number {
+    return this.height;
+  }
+
   getLayers(): LayerModel[] {
     return this.layers;
   }
