@@ -14,6 +14,33 @@
   <div class="export-popup-backdrop" (click)="closeExportPopup()">
     <div class="export-popup" (click)="$event.stopPropagation()">
       <h4>Export Options</h4>
+      <label class="export-field">
+        File name
+        <input
+          type="text"
+          [(ngModel)]="exportFilename"
+          placeholder="Optional custom filename"
+        />
+      </label>
+      <label class="export-field">
+        Scale
+        <select [(ngModel)]="exportScale">
+          <option [ngValue]="1">1x</option>
+          <option [ngValue]="2">2x</option>
+          <option [ngValue]="4">4x</option>
+          <option [ngValue]="8">8x</option>
+        </select>
+      </label>
+      <div class="export-range">
+        <label class="export-field">
+          From frame
+          <input type="number" min="1" [(ngModel)]="exportFromFrame" />
+        </label>
+        <label class="export-field">
+          To frame
+          <input type="number" min="1" [(ngModel)]="exportToFrame" />
+        </label>
+      </div>
       <button type="button" (click)="exportProject('ACTIVE_FRAME')">Export Active Frame</button>
       <button type="button" (click)="exportProject('ALL_FRAMES')">
         Export All Frames (Sprite Sheet)
