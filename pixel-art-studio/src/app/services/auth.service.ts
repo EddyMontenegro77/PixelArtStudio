@@ -1,52 +1,60 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, throwError, tap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { User } from '../types/auth-interfaces/user';
-import { LoginCredentials, SignUpData, AuthResponse } from '../types/auth-interfaces/auth';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { LoginCredentials, SignUpData } from '../types/auth-interfaces/auth';
 import { Router } from '@angular/router';
+import { SupabaseService } from './supabase.service';
+import { Session, User as SupabaseAuthUser } from '@supabase/supabase-js';
+
+type UserProfileRow = {
+  username: string | null;
+  avatar_url: string | null;
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly TOKEN_KEY = 'auth_token';
-  private readonly USER_KEY = 'auth_user';
-  private readonly API_URL = 'http://localhost:3000/api/auth';
-
   private authState$ = new BehaviorSubject<boolean>(false);
-  private currentUser$ = new BehaviorSubject<User | null>(this.getUserFromStorage());
+  private currentUser$ = new BehaviorSubject<User | null>(null);
 
   public isAuthenticated$ = this.authState$.asObservable();
   public user$ = this.currentUser$.asObservable();
 
   constructor(
-    private http: HttpClient,
     private router: Router,
+    private supabaseService: SupabaseService,
   ) {
-    this.checkAuthStatus();
+    this.initializeAuth();
   }
 
-  logIn(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap((response) => this.handleAuthSuccess(response)),
-      catchError((error) => this.handleError(error)),
-    );
+  async signUp(signUpData: SignUpData): Promise<void> {
+    const data = await this.signUpWithAuth(signUpData);
+    await this.upsertUserProfile(data.user?.id, signUpData.username);
+
+    await this.applySession(data.session);
   }
 
-  signUp(data: SignUpData): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/signup`, data).pipe(
-      tap((response) => this.handleAuthSuccess(response)),
-      catchError((error) => this.handleError(error)),
-    );
+  async logIn(loginCredentials: LoginCredentials): Promise<void> {
+    const { data, error } = await this.supabaseService.supabase.auth.signInWithPassword({
+      email: loginCredentials.email,
+      password: loginCredentials.password,
+    });
+    if (error) throw error;
+    await this.applySession(data.session);
   }
 
-  signOut(): void {
-    // Call backend to invalidate token
+  async recoverPassword(email: string): Promise<void> {
+    const { error } = await this.supabaseService.supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+  }
 
-    this.clearAuthData();
+  async signOut(): Promise<void> {
+    const { error } = await this.supabaseService.supabase.auth.signOut();
+    if (error) throw error;
     this.authState$.next(false);
     this.currentUser$.next(null);
-    this.router.navigate(['/login']);
+    await this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
@@ -57,99 +65,90 @@ export class AuthService {
     return this.currentUser$.value;
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+  private initializeAuth(): void {
+    void this.restoreSession();
+    this.supabaseService.supabase.auth.onAuthStateChange((_event, session) => {
+      void this.applySession(session);
+    });
   }
 
-  refreshUserData(): Observable<User> {
-    return this.http.get<User>(`${this.API_URL}/me`).pipe(
-      tap((user) => {
-        this.saveUserToStorage(user);
-        this.currentUser$.next(user);
-      }),
-      catchError((error) => {
-        this.signOut();
-        return throwError(() => error);
-      }),
-    );
+  private async restoreSession(): Promise<void> {
+    const {
+      data: { session },
+      error,
+    } = await this.supabaseService.supabase.auth.getSession();
+    if (error) {
+      this.authState$.next(false);
+      this.currentUser$.next(null);
+      return;
+    }
+    await this.applySession(session);
   }
 
-  // Private Methods
+  private async applySession(session: Session | null): Promise<void> {
+    if (!session?.user) {
+      this.clearAuthState();
+      return;
+    }
 
-  private handleAuthSuccess(response: AuthResponse): void {
-    this.saveToken(response.token);
-    this.saveUserToStorage(response.user);
+    const authUser = session.user;
+    const profile = await this.fetchUserProfile(authUser.id);
+    const user = this.mapToAppUser(authUser, profile);
+
+    this.currentUser$.next(user);
     this.authState$.next(true);
-    this.currentUser$.next(response.user);
-
-    // Navigate to other route
   }
 
-  private hasToken(): boolean {
-    return !!localStorage.getItem(this.TOKEN_KEY);
+  private clearAuthState(): void {
+    this.authState$.next(false);
+    this.currentUser$.next(null);
   }
 
-  private checkAuthStatus(): void {
-    const hasToken = this.hasToken();
-    const user = this.getUserFromStorage();
+  private async fetchUserProfile(userId: string): Promise<UserProfileRow | null> {
+    const { data, error } = await this.supabaseService.supabase
+      .from('user_profile')
+      .select('username, avatar_url')
+      .eq('user_id', userId)
+      .maybeSingle();
 
-    if (hasToken && user) {
-      this.authState$.next(true);
-      this.currentUser$.next(user);
+    if (error) return null;
 
-      // check if token stills valid
-    } else {
-      this.clearAuthData();
-    }
+    return data as UserProfileRow | null;
   }
 
-  private saveToken(token: string) {
-    localStorage.setItem(this.TOKEN_KEY, token);
+  private async signUpWithAuth(signUpData: SignUpData) {
+    const { data, error } = await this.supabaseService.supabase.auth.signUp({
+      email: signUpData.email,
+      password: signUpData.password,
+      options: {
+        data: { username: signUpData.username },
+      },
+    });
+
+    if (error) throw error;
+    return data;
   }
 
-  private saveUserToStorage(user: User) {
-    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+  private async upsertUserProfile(userId: string | undefined, username: string): Promise<void> {
+    if (!userId) return;
+
+    const { error } = await this.supabaseService.supabase.from('user_profile').upsert(
+      {
+        user_id: userId,
+        username,
+      },
+      { onConflict: 'user_id' },
+    );
+
+    if (error) throw error;
   }
 
-  private getUserFromStorage(): User | null {
-    const userStr = localStorage.getItem(this.USER_KEY);
-    if (userStr) {
-      try {
-        return JSON.parse(userStr);
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  }
-
-  private clearAuthData(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
-  }
-
-  // HTTP Error Handling
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Unexpected error ocurred';
-    if (error.error instanceof ErrorEvent) errorMessage = `Error: ${error.error.message}`;
-    else {
-      switch (error.status) {
-        case 401:
-          errorMessage = 'Invalid Credentials';
-          break;
-        case 403:
-          errorMessage = 'You dont have permission to perform this action';
-          break;
-        case 404:
-          errorMessage = 'Not Found';
-          break;
-        case 500:
-          errorMessage = 'Server error. Try again later';
-          break;
-        default:
-          errorMessage = error.error?.message || `Error ${error.status}`;
-      }
-    }
-    return throwError(() => new Error(errorMessage));
+  private mapToAppUser(authUser: SupabaseAuthUser, profile: UserProfileRow | null): User {
+    return {
+      id: authUser.id,
+      email: authUser.email ?? '',
+      name: profile?.username ?? authUser.email ?? '',
+      avatar_url: profile?.avatar_url ?? '',
+    };
   }
 }
