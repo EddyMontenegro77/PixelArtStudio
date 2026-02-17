@@ -1,0 +1,17 @@
+<div class="login-container">
+  <form class="login-form">
+    <label for="email-input">Email</label>
+    <input
+      name="email"
+      type="email"
+      placeholder="email"
+      maxlength="50"
+      id="email-input"
+      [(ngModel)]="email"
+      required=""
+    />
+    <label for="passowrd-input">Password</label>
+    <input type="password" placeholder="password" [(ngModel)]="password" name="password" required />
+    <button class="submit-btn" (click)="tryLogIn()">Log In</button>
+  </form>
+</div>
