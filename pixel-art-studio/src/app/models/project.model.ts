@@ -8,6 +8,7 @@ export interface ProjectSnapshot {
 }
 
 export class ProjectModel {
+  cloudProjectId?: string;
   name: string;
   frames: FrameModel[] = [];
   palette: PaletteModel = new PaletteModel('Project Palette');
