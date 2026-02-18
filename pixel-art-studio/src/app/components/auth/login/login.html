@@ -1,17 +1,28 @@
 <div class="login-container">
-  <form class="login-form">
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="tryLogIn()">
     <label for="email-input">Email</label>
     <input
-      name="email"
       type="email"
       placeholder="email"
       maxlength="50"
       id="email-input"
-      [(ngModel)]="email"
-      required=""
+      formControlName="email"
     />
+    @if (loginForm.controls['email'].touched && loginForm.controls['email'].invalid) {
+      <small>Invalid email</small>
+    }
     <label for="passowrd-input">Password</label>
-    <input type="password" placeholder="password" [(ngModel)]="password" name="password" required />
-    <button class="submit-btn" (click)="tryLogIn()">Log In</button>
+    <input type="password" placeholder="password" formControlName="password" />
+    @if (loginForm.controls['password'].touched && loginForm.controls['password'].invalid) {
+      <small>Password needs to be at least 8 characters</small>
+    }
+
+    @if (errorMessage) {
+      <small>{{ errorMessage }}</small>
+    }
+
+    <button class="submit-btn" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+      Log In
+    </button>
   </form>
 </div>
