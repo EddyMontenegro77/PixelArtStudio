@@ -1,23 +1,30 @@
 <div class="signup-container">
-  <form class="signup-form">
+  <form class="signup-form" [formGroup]="signUpForm" (ngSubmit)="trySignUp()">
     <label for="signup-username">Username</label>
     <input
       type="text"
       placeholder="Username"
       id="signup-username"
       name="username"
-      [(ngModel)]="username"
+      formControlName="username"
       required
     />
+    @if (signUpForm.controls['username'].touched && signUpForm.controls['username'].invalid) {
+      <small>Invalid username</small>
+    }
+
     <label for="signup-email">Email</label>
     <input
       type="email"
       placeholder="Email"
       id="signup-email"
       name="email"
-      [(ngModel)]="email"
+      formControlName="email"
       required
     />
+    @if (signUpForm.controls['email'].touched && signUpForm.controls['email'].invalid) {
+      <small>Invalid email</small>
+    }
 
     <label for="signup-password">Password</label>
     <input
@@ -25,18 +32,41 @@
       placeholder="Password"
       id="signup-password"
       name="password"
-      [(ngModel)]="password"
+      formControlName="password"
       required
     />
+    @if (signUpForm.controls['password'].touched && signUpForm.controls['password'].invalid) {
+      <small>Invalid password</small>
+    }
+
     <label for="signup-password-verification">Password Verification</label>
     <input
       type="password"
       placeholder="Type your password again"
       id="signup-password-verification"
       name="passwordVerification"
-      [(ngModel)]="passwordVerification"
+      formControlName="passwordVerification"
       required
     />
-    <button type="button" class="signup-submit-btn" (click)="trySignUp()">Sign Up</button>
+    @if (
+      signUpForm.controls['passwordVerification'].touched &&
+      signUpForm.controls['passwordVerification'].invalid
+    ) {
+      <small>Invalid password</small>
+    }
+    @if (signUpForm.errors?.['passwordMismatch']) {
+      <small>Passwords do not match</small>
+    }
+
+    @if (errorMessage) {
+      <small>{{ errorMessage }}</small>
+    }
+    @if (successMessage) {
+      <small>{{ successMessage }}</small>
+    }
+
+    <button type="submit" class="signup-submit-btn" [disabled]="signUpForm.invalid || isSubmitting">
+      Sign Up
+    </button>
   </form>
 </div>
