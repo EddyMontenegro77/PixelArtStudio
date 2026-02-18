@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../types/auth-interfaces/user';
-import { LoginCredentials, SignUpData } from '../types/auth-interfaces/auth';
+import { LoginCredentials, SignUpData, SignUpResult } from '../types/auth-interfaces/auth';
 import { Router } from '@angular/router';
 import { SupabaseService } from './supabase.service';
 import { Session, User as SupabaseAuthUser } from '@supabase/supabase-js';
@@ -28,11 +28,16 @@ export class AuthService {
     this.initializeAuth();
   }
 
-  async signUp(signUpData: SignUpData): Promise<void> {
+  async signUp(signUpData: SignUpData): Promise<SignUpResult> {
     const data = await this.signUpWithAuth(signUpData);
     await this.upsertUserProfile(data.user?.id, signUpData.username);
 
-    await this.applySession(data.session);
+    if (data.session) {
+      await this.applySession(data.session);
+      return { requiresEmailConfirmation: false };
+    }
+
+    return { requiresEmailConfirmation: true };
   }
 
   async logIn(loginCredentials: LoginCredentials): Promise<void> {
