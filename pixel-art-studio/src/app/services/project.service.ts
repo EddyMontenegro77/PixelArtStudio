@@ -5,13 +5,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FrameModel, FrameSnapshot } from '../models/frame.model';
 import { LayerModel } from '../models/layer.model';
 import Action from '../types/action';
-import { ProjectSnapshot } from '../models/project.model';
 import { PaletteModel } from '../models/palette.model';
-
-type ProjectState = {
-  projectSnapshot: ProjectSnapshot;
-  frameSnapshots: Map<number, FrameSnapshot>;
-};
+import { GridModel } from '../models/grid.model';
+import { PersistedProjectSaveData, ProjectState } from '../types/projectsave/project-save';
+import { ProjectListItem, ProjectRepositoryService } from './project-repository.service';
+import { renderVisibleLayers } from '../components/canvas/canvas-render.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -22,10 +20,137 @@ export class ProjectService {
 
   private historyManager!: HistoryManager;
 
+  constructor(private projectRepositoryService: ProjectRepositoryService) {}
+
   createNewProject(width: number, height: number, name: string): void {
     const project = new ProjectModel(width, height, name);
     this.historyManager = new HistoryManager();
     this.projectSubject.next(project);
+  }
+
+  async saveProjectToCloud(): Promise<string> {
+    const project = this.getProject();
+    const projectData = this.toProjectSaveData(project);
+    const thumbnailBlob = await this.generateThumbnailBlob();
+    const projectUuid = await this.projectRepositoryService.saveProjectInCloud(
+      projectData,
+      project.cloudProjectId,
+      thumbnailBlob,
+    );
+
+    project.cloudProjectId = projectUuid;
+    this.emitProjectUpdate();
+    return projectUuid;
+  }
+
+  async loadProjectFromCloud(projectId?: string): Promise<void> {
+    const currentProject = this.getProject();
+    const targetProjectId = projectId ?? currentProject.cloudProjectId;
+    if (!targetProjectId) return;
+
+    const projectSaveData = await this.projectRepositoryService.getProjectFromCloud(targetProjectId);
+    this.replaceProjectFromPersisted(projectSaveData, targetProjectId);
+  }
+
+  async listCloudProjectsWithThumbnails(): Promise<Array<ProjectListItem & { thumbnailUrl: string | null }>> {
+    const projects = await this.projectRepositoryService.listProjectsFromCloud();
+
+    return Promise.all(
+      projects.map(async (project) => {
+        if (!project.thumbnailPath) {
+          return { ...project, thumbnailUrl: null };
+        }
+
+        const thumbnailUrl = await this.projectRepositoryService.getThumbnailUrl(project.thumbnailPath);
+        return { ...project, thumbnailUrl };
+      }),
+    );
+  }
+
+  toProjectSaveData(project: ProjectModel = this.getProject()): PersistedProjectSaveData {
+    return {
+      name: project.name,
+      width: project.width,
+      height: project.height,
+      pixelSize: project.pixelSize,
+      activeFrameId: project.getActiveFrameId(),
+      palette: project.getPalette().createSnapshot(),
+      frames: project.frames.map((frame) => ({
+        id: frame.getId(),
+        duration: frame.getDuration(),
+        activeLayerId: frame.getActiveLayer().getId(),
+        layers: frame.getLayers().map((layer) => ({
+          id: layer.getId(),
+          name: layer.getName(),
+          visible: layer.isVisible(),
+          opacity: layer.getOpacity(),
+          locked: layer.isLocked(),
+          pixels: layer.getGrid().getPixels(),
+        })),
+      })),
+    };
+  }
+
+  fromProjectSaveData(raw: PersistedProjectSaveData): ProjectModel {
+    const project = new ProjectModel(raw.width, raw.height, raw.name);
+    project.pixelSize = raw.pixelSize;
+
+    const palette = new PaletteModel(raw.palette.name);
+    palette.restoreSnapshot(raw.palette);
+    project.setPalette(palette);
+
+    const frames: FrameModel[] = raw.frames.map((rawFrame) => {
+      const frame = new FrameModel(raw.width, raw.height);
+      (frame as any).frameId = rawFrame.id;
+      frame.setDuration(rawFrame.duration);
+
+      const layers: LayerModel[] = rawFrame.layers.map((rawLayer) => {
+        const layer = new LayerModel(raw.width, raw.height, rawLayer.name);
+        (layer as any).layerId = rawLayer.id;
+        layer.setVisible(rawLayer.visible);
+        layer.setOpacity(rawLayer.opacity);
+        layer.setLocked(rawLayer.locked);
+
+        const grid = new GridModel(raw.width, raw.height);
+        grid.setPixels(rawLayer.pixels);
+        layer.setGrid(grid);
+        return layer;
+      });
+
+      (frame as any).layers = layers;
+      frame.setActiveLayer(rawFrame.activeLayerId);
+      return frame;
+    });
+
+    (project as any).frames = frames;
+    project.setActiveFrameId(raw.activeFrameId);
+
+    const maxFrameId = raw.frames.reduce((max, frame) => Math.max(max, frame.id), 0);
+    const maxLayerId = raw.frames.reduce((maxFrame, frame) => {
+      const maxLayer = frame.layers.reduce((max, layer) => Math.max(max, layer.id), 0);
+      return Math.max(maxFrame, maxLayer);
+    }, 0);
+
+    (FrameModel as any).frameCounter = maxFrameId + 1;
+    (LayerModel as any).layerCounter = maxLayerId + 1;
+
+    return project;
+  }
+
+  replaceProjectFromPersisted(raw: PersistedProjectSaveData, cloudProjectId?: string): void {
+    const project = this.fromProjectSaveData(raw);
+    project.cloudProjectId = cloudProjectId;
+    this.historyManager = new HistoryManager();
+    this.projectSubject.next(project);
+  }
+
+  serializeProject(project: ProjectModel = this.getProject()): string {
+    return JSON.stringify(this.toProjectSaveData(project));
+  }
+
+  deserializeAndReplace(serializedProject: string): void {
+    const parsed = JSON.parse(serializedProject) as PersistedProjectSaveData;
+    this.replaceProjectFromPersisted(parsed);
   }
 
   getProject(): ProjectModel {
@@ -180,5 +305,40 @@ export class ProjectService {
   private normalizeFrameDuration(ms: number): number {
     if (!Number.isFinite(ms)) return 100;
     return Math.max(20, Math.min(10000, Math.floor(ms)));
+  }
+
+  private async generateThumbnailBlob(): Promise<Blob> {
+    const project = this.getProject();
+    const activeFrame = project.getActiveFrame();
+    const thumbnailScale = 4;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = activeFrame.getWidth() * thumbnailScale;
+    canvas.height = activeFrame.getHeight() * thumbnailScale;
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+      throw new Error('Could not create thumbnail context.');
+    }
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    renderVisibleLayers(context, activeFrame, thumbnailScale);
+
+    const blob = await this.canvasToBlob(canvas, 'image/webp', 0.85);
+    if (!blob) {
+      throw new Error('Could not generate project thumbnail.');
+    }
+
+    return blob;
+  }
+
+  private canvasToBlob(
+    canvas: HTMLCanvasElement,
+    type: string,
+    quality?: number,
+  ): Promise<Blob | null> {
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), type, quality);
+    });
   }
 }
