@@ -15,3 +15,7 @@ export interface SignUpData {
   email: string;
   password: string;
 }
+
+export interface SignUpResult {
+  requiresEmailConfirmation: boolean;
+}
