@@ -1,11 +1,12 @@
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { Router } from 'react-router-dom';
 
-export const guestGuard: CanActivateFn = (route, state) => {
+export const guestGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  await authService.waitForAuthInitialization();
+  const hasSession = await authService.hasActiveSession();
 
-  return authService.isAuthenticated() ? router.createUrlTree(['/profile']) : true;
+  return hasSession ? router.createUrlTree(['/profile']) : true;
 };
