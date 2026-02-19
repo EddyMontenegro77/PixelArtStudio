@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,8 +12,8 @@ import { LoginCredentials } from '../../../types/auth-interfaces/auth';
 })
 export class Login {
   loginForm: FormGroup;
-  isSubmitting: boolean = false;
-  errorMessage: string = '';
+  readonly isSubmitting = signal(false);
+  readonly errorMessage = signal('');
 
   constructor(
     private authService: AuthService,
@@ -27,13 +27,13 @@ export class Login {
   }
 
   async tryLogIn(): Promise<void> {
-    if (this.loginForm.invalid || this.isSubmitting) {
+    if (this.loginForm.invalid || this.isSubmitting()) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    this.isSubmitting = true;
-    this.errorMessage = '';
+    this.isSubmitting.set(true);
+    this.errorMessage.set('');
 
     try {
       const raw = this.loginForm.getRawValue();
@@ -45,23 +45,40 @@ export class Login {
       await this.authService.logIn(credentials);
       await this.router.navigate(['/profile']);
     } catch (error) {
-      this.errorMessage = this.getLoginErrorMessage(error);
+      this.errorMessage.set(this.getLoginErrorMessage(error));
     } finally {
-      this.isSubmitting = false;
+      this.isSubmitting.set(false);
     }
   }
 
   private getLoginErrorMessage(error: unknown): string {
-    if (!(error instanceof Error)) return 'Login failed';
+    const rawError = this.extractRawError(error);
+    if (!rawError) return 'Login failed';
 
-    const message = error.message.toLowerCase();
-    if (message.includes('email not confirmed')) {
-      return 'You must confirm your email before logging in.';
-    }
-    if (message.includes('invalid login credentials')) {
+    if (rawError.code === 'invalid_credentials') {
       return 'Invalid credentials.';
     }
 
-    return error.message;
+    if (rawError.code === 'email_not_confirmed') {
+      return 'You must confirm your email before logging in.';
+    }
+
+    return rawError.message ?? 'Login failed';
+  }
+
+  private extractRawError(error: unknown): { code?: string; message?: string } | null {
+    if (typeof error === 'object' && error !== null) {
+      const raw = error as { code?: unknown; message?: unknown };
+      return {
+        code: typeof raw.code === 'string' ? raw.code : undefined,
+        message: typeof raw.message === 'string' ? raw.message : undefined,
+      };
+    }
+
+    if (error instanceof Error) {
+      return { message: error.message };
+    }
+
+    return null;
   }
 }

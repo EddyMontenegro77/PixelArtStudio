@@ -58,14 +58,18 @@
       <small>Passwords do not match</small>
     }
 
-    @if (errorMessage) {
-      <small>{{ errorMessage }}</small>
+    @if (errorMessage()) {
+      <small>{{ errorMessage() }}</small>
     }
-    @if (successMessage) {
-      <small>{{ successMessage }}</small>
+    @if (successMessage()) {
+      <small>{{ successMessage() }}</small>
     }
 
-    <button type="submit" class="signup-submit-btn" [disabled]="signUpForm.invalid || isSubmitting">
+    <button
+      type="submit"
+      class="signup-submit-btn"
+      [disabled]="signUpForm.invalid || isSubmitting()"
+    >
       Sign Up
     </button>
   </form>

@@ -17,11 +17,11 @@
       <small>Password needs to be at least 8 characters</small>
     }
 
-    @if (errorMessage) {
-      <small>{{ errorMessage }}</small>
+    @if (errorMessage()) {
+      <small>{{ errorMessage() }}</small>
     }
 
-    <button class="submit-btn" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+    <button class="submit-btn" type="submit" [disabled]="loginForm.invalid || isSubmitting()">
       Log In
     </button>
   </form>
