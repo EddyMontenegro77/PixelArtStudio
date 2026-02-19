@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../types/auth-interfaces/user';
 import { LoginCredentials, SignUpData, SignUpResult } from '../types/auth-interfaces/auth';
@@ -17,6 +17,8 @@ type UserProfileRow = {
 export class AuthService {
   private authState$ = new BehaviorSubject<boolean>(false);
   private currentUser$ = new BehaviorSubject<User | null>(null);
+  private authInitialized: Promise<void>;
+  private resolveAuthInitialized!: () => void;
 
   public isAuthenticated$ = this.authState$.asObservable();
   public user$ = this.currentUser$.asObservable();
@@ -24,7 +26,11 @@ export class AuthService {
   constructor(
     private router: Router,
     private supabaseService: SupabaseService,
+    private ngZone: NgZone,
   ) {
+    this.authInitialized = new Promise<void>((resolve) => {
+      this.resolveAuthInitialized = resolve;
+    });
     this.initializeAuth();
   }
 
@@ -70,10 +76,31 @@ export class AuthService {
     return this.currentUser$.value;
   }
 
+  async hasActiveSession(): Promise<boolean> {
+    const {
+      data: { session },
+      error,
+    } = await this.supabaseService.supabase.auth.getSession();
+
+    if (error || !session) {
+      this.clearAuthState();
+      return false;
+    }
+
+    await this.applySession(session);
+    return true;
+  }
+
+  waitForAuthInitialization(): Promise<void> {
+    return this.authInitialized;
+  }
+
   private initializeAuth(): void {
-    void this.restoreSession();
+    void this.restoreSession().finally(() => {
+      this.resolveAuthInitialized();
+    });
     this.supabaseService.supabase.auth.onAuthStateChange((_event, session) => {
-      void this.applySession(session);
+      void this.ngZone.run(() => this.applySession(session));
     });
   }
 
@@ -100,13 +127,17 @@ export class AuthService {
     const profile = await this.fetchUserProfile(authUser.id);
     const user = this.mapToAppUser(authUser, profile);
 
-    this.currentUser$.next(user);
-    this.authState$.next(true);
+    this.ngZone.run(() => {
+      this.currentUser$.next(user);
+      this.authState$.next(true);
+    });
   }
 
   private clearAuthState(): void {
-    this.authState$.next(false);
-    this.currentUser$.next(null);
+    this.ngZone.run(() => {
+      this.authState$.next(false);
+      this.currentUser$.next(null);
+    });
   }
 
   private async fetchUserProfile(userId: string): Promise<UserProfileRow | null> {
