@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Editor } from './pages/editor/editor';
+import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
+import { UserMenu } from './components/user-menu/user-menu';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Editor],
+  imports: [RouterOutlet, UserMenu, RouterLinkWithHref],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
