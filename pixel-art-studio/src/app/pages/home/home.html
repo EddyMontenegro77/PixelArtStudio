@@ -1,1 +1,19 @@
-<p>home works!</p>
+<div class="home-container">
+  <h1>Pixel Art Studio</h1>
+  <h2>Build bold. Pixel by pixel.</h2>
+  <div class="call-to-action-containers">
+    @if (isAuthenticated$ | async) {
+      <button type="button" class="cta-btn new-project-btn" (click)="goToEditor()">
+        Start your new project
+      </button>
+      <button type="button" class="cta-btn profile-btn" (click)="goToProfile()">My projects</button>
+    } @else {
+      <button type="button" class="cta-btn new-project-btn" (click)="goToEditor()">
+        Start your new local project
+      </button>
+      <p>Don't lose your pixels! Log in to save them in the cloud.</p>
+      <button type="button" class="cta-btn login-btn" (click)="goToLogIn()">Log In</button>
+      <button type="button" class="cta-btn signup-btn" (click)="goToSignUp()">Sign Up</button>
+    }
+  </div>
+</div>
