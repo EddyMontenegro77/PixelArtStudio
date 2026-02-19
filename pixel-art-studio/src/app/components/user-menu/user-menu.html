@@ -1,0 +1,14 @@
+<div class="user-menu-container">
+  <a class="avatar-link" [routerLink]="(isAuthenticated$ | async) ? '/profile' : '/login'">
+    <img [src]="userAvatar" alt="user avatar" />
+  </a>
+  <div class="menu">
+    @if (isAuthenticated$ | async) {
+      <a routerLink="/profile" class="router-link">Profile</a>
+      <button type="button" class="logout-btn" (click)="logOut()">Log Out</button>
+    } @else {
+      <a routerLink="/login" class="router-link">Log In</a>
+      <a routerLink="/signup" class="router-link">Sign Up</a>
+    }
+  </div>
+</div>

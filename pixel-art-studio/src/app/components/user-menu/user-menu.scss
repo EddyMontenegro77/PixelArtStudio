@@ -1,0 +1,45 @@
+.user-menu-container {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  .avatar-link img {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  min-width: max-content;
+  width: max-content;
+  white-space: nowrap;
+  padding: 1rem;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0.15s;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  display: flex;
+  gap: 0.5rem;
+  flex-flow: column wrap;
+  justify-items: center;
+  align-items: center;
+}
+
+.user-menu-container:hover .menu,
+.user-menu-container:focus-within .menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
