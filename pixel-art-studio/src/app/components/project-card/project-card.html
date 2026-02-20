@@ -1,1 +1,16 @@
-<p>project-card works!</p>
+<article class="project-card-container" (click)="handleOpenProject()">
+  <img
+    [src]="thumbnail() ?? '/icons/user_icon_black.svg'"
+    class="project-thumbnail"
+    [alt]="'Thumbnail for ' + projectName()"
+  />
+  <h3 class="project-title">{{ projectName() }}</h3>
+  <button
+    type="button"
+    (click)="handleDeleteProject($event)"
+    class="project-action-btn"
+    aria-label="Delete project"
+  >
+    <img src="/icons/trash_icon_black.svg" class="icon" alt="Delete project icon" />
+  </button>
+</article>
