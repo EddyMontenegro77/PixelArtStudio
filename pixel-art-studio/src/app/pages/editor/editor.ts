@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../services/project.service';
 import { Canvas } from '../../components/canvas/canvas';
@@ -7,7 +7,6 @@ import { Toolbar } from '../../components/toolbar/toolbar';
 import { Projectbar } from '../../components/projectbar/projectbar';
 import { Settingsbar } from '../../components/settingsbar/settingsbar';
 import { Framesbar } from '../../components/framesbar/framesbar';
-import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-editor',
@@ -20,14 +19,21 @@ export class Editor {
   width: number = 32;
   height: number = 32;
   isInitialized: boolean = false;
-  currentTheme: 'light' | 'dark';
 
   constructor(
     private projectService: ProjectService,
     private toolManagerService: ToolManagerService,
-    private themeService: ThemeService,
-  ) {
-    this.currentTheme = this.themeService.getTheme();
+  ) {}
+
+  ngOnInit(): void {
+    if (this.projectService.hasProject()) {
+      this.isInitialized = true;
+      return;
+    }
+
+    if (this.projectService.loadProjectFromLocalDraft()) {
+      this.isInitialized = true;
+    }
   }
 
   initializeCanvas(): void {
@@ -67,9 +73,5 @@ export class Editor {
       event.stopPropagation();
       this.toolManagerService.handleRedo();
     }
-  }
-
-  toggleTheme(): void {
-    this.currentTheme = this.themeService.toggleTheme();
   }
 }
