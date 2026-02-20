@@ -5,6 +5,7 @@ import { LoginCredentials, SignUpData, SignUpResult } from '../types/auth-interf
 import { Router } from '@angular/router';
 import { SupabaseService } from './supabase.service';
 import { Session, User as SupabaseAuthUser } from '@supabase/supabase-js';
+import { StorageService } from './storage.service';
 
 type UserProfileRow = {
   username: string | null;
@@ -15,6 +16,8 @@ type UserProfileRow = {
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly MAX_AVATAR_SIZE_BYTES = 1_000_000;
+  private readonly MAX_AVATAR_DIMENSION = 512;
   private authState$ = new BehaviorSubject<boolean>(false);
   private currentUser$ = new BehaviorSubject<User | null>(null);
   private authInitialized: Promise<void>;
@@ -27,6 +30,7 @@ export class AuthService {
     private router: Router,
     private supabaseService: SupabaseService,
     private ngZone: NgZone,
+    private storageService: StorageService,
   ) {
     this.authInitialized = new Promise<void>((resolve) => {
       this.resolveAuthInitialized = resolve;
@@ -63,9 +67,140 @@ export class AuthService {
   async signOut(): Promise<void> {
     const { error } = await this.supabaseService.supabase.auth.signOut();
     if (error) throw error;
-    this.authState$.next(false);
-    this.currentUser$.next(null);
+    this.clearAuthState();
     await this.router.navigate(['/login']);
+  }
+
+  async updateUsername(username: string): Promise<void> {
+    const user = this.getCurrentUser();
+    if (!user) throw new Error('No active session.');
+
+    const sanitized = username.trim();
+    if (!sanitized) throw new Error('Username cannot be empty.');
+
+    const { error } = await this.supabaseService.supabase.from('user_profile').upsert(
+      {
+        user_id: user.id,
+        username: sanitized,
+      },
+      { onConflict: 'user_id' },
+    );
+
+    if (error) throw error;
+
+    this.ngZone.run(() => {
+      this.currentUser$.next({ ...user, name: sanitized });
+    });
+  }
+
+  async uploadAvatar(file: File): Promise<void> {
+    const user = this.getCurrentUser();
+    if (!user) throw new Error('No active session.');
+
+    const avatarBlob = await this.convertAvatarToWebp(file);
+
+    const uploadResult = await this.storageService.uploadAvatar({
+      userId: user.id,
+      file: avatarBlob,
+    });
+
+    if (!uploadResult.success) {
+      throw uploadResult.error;
+    }
+
+    const avatarPath = uploadResult.path;
+    const { error } = await this.supabaseService.supabase.from('user_profile').upsert(
+      {
+        user_id: user.id,
+        username: user.name,
+        avatar_url: avatarPath,
+      },
+      { onConflict: 'user_id' },
+    );
+
+    if (error) throw error;
+
+    const signedUrl = await this.storageService.getAvatarUrl(avatarPath);
+    this.ngZone.run(() => {
+      this.currentUser$.next({
+        ...user,
+        avatar_url: signedUrl ?? user.avatar_url,
+      });
+    });
+  }
+
+  private async convertAvatarToWebp(file: File): Promise<Blob> {
+    const image = await this.loadImage(file);
+
+    let width = image.width;
+    let height = image.height;
+    const maxDimension = Math.max(width, height);
+    if (maxDimension > this.MAX_AVATAR_DIMENSION) {
+      const ratio = this.MAX_AVATAR_DIMENSION / maxDimension;
+      width = Math.max(1, Math.floor(width * ratio));
+      height = Math.max(1, Math.floor(height * ratio));
+    }
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) {
+      throw new Error('Could not prepare avatar canvas.');
+    }
+
+    const qualitySteps = [0.92, 0.86, 0.8, 0.74, 0.68, 0.62, 0.56, 0.5];
+    let candidateBlob: Blob | null = null;
+
+    for (let attempts = 0; attempts < 4; attempts++) {
+      canvas.width = width;
+      canvas.height = height;
+      context.clearRect(0, 0, width, height);
+      context.drawImage(image, 0, 0, width, height);
+
+      for (const quality of qualitySteps) {
+        const blob = await this.canvasToBlob(canvas, 'image/webp', quality);
+        if (!blob) continue;
+        candidateBlob = blob;
+        if (blob.size <= this.MAX_AVATAR_SIZE_BYTES) {
+          return blob;
+        }
+      }
+
+      width = Math.max(1, Math.floor(width * 0.8));
+      height = Math.max(1, Math.floor(height * 0.8));
+    }
+
+    if (candidateBlob && candidateBlob.size <= this.MAX_AVATAR_SIZE_BYTES) {
+      return candidateBlob;
+    }
+
+    throw new Error('Could not compress avatar below 1MB.');
+  }
+
+  private async loadImage(file: File): Promise<HTMLImageElement> {
+    const dataUrl = await this.readFileAsDataUrl(file);
+    const image = new Image();
+    image.src = dataUrl;
+    await image.decode();
+    return image;
+  }
+
+  private readFileAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ''));
+      reader.onerror = () => reject(new Error('Could not read avatar file.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  private canvasToBlob(
+    canvas: HTMLCanvasElement,
+    type: string,
+    quality: number,
+  ): Promise<Blob | null> {
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), type, quality);
+    });
   }
 
   isAuthenticated(): boolean {
@@ -125,7 +260,8 @@ export class AuthService {
 
     const authUser = session.user;
     const profile = await this.fetchUserProfile(authUser.id);
-    const user = this.mapToAppUser(authUser, profile);
+    const avatarUrl = await this.resolveAvatarUrl(profile?.avatar_url ?? null);
+    const user = this.mapToAppUser(authUser, profile, avatarUrl);
 
     this.ngZone.run(() => {
       this.currentUser$.next(user);
@@ -150,6 +286,13 @@ export class AuthService {
     if (error) return null;
 
     return data as UserProfileRow | null;
+  }
+
+  private async resolveAvatarUrl(avatarPath: string | null): Promise<string> {
+    if (!avatarPath) return '';
+
+    const signedUrl = await this.storageService.getAvatarUrl(avatarPath);
+    return signedUrl ?? '';
   }
 
   private async signUpWithAuth(signUpData: SignUpData) {
@@ -179,12 +322,16 @@ export class AuthService {
     if (error) throw error;
   }
 
-  private mapToAppUser(authUser: SupabaseAuthUser, profile: UserProfileRow | null): User {
+  private mapToAppUser(
+    authUser: SupabaseAuthUser,
+    profile: UserProfileRow | null,
+    avatarUrl: string,
+  ): User {
     return {
       id: authUser.id,
       email: authUser.email ?? '',
       name: profile?.username ?? authUser.email ?? '',
-      avatar_url: profile?.avatar_url ?? '',
+      avatar_url: avatarUrl,
     };
   }
 }
