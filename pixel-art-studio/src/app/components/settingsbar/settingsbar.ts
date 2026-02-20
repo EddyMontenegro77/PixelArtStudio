@@ -23,8 +23,12 @@ export class Settingsbar {
     private projectService: ProjectService,
   ) {}
 
-  saveProject(): void {
-    // Figure out logic after
+  async saveProject(): Promise<void> {
+    try {
+      await this.projectService.saveProject();
+    } catch (error) {
+      console.error('Could not save project', error);
+    }
   }
 
   openExportPopup(): void {
