@@ -49,6 +49,11 @@ export class StorageService {
     };
   }
 
+  async getAvatarUrl(path: string, expiresIn = 3600): Promise<string | null> {
+    const result = await this.getSignedUrl(this.AVATAR_BUCKET, path, expiresIn);
+    return result.success ? result.url : null;
+  }
+
   async removeObject(bucket: BucketName, path: string): Promise<boolean> {
     const { error } = await this.supabaseService.supabase.storage.from(bucket).remove([path]);
     return !error;

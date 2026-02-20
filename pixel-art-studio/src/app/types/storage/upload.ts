@@ -8,7 +8,7 @@ export type UploadThumbnailInput = {
 
 export type UploadAvatarInput = {
   userId: string;
-  file: File;
+  file: Blob;
 };
 
 export interface UploadSuccess {
