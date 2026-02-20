@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToolManagerService } from '../../services/tool-manager.service';
 import { ExportMode, ExportOptions, ExportService } from '../../services/export.service';
@@ -16,12 +16,15 @@ export class Settingsbar {
   exportScale: number = 1;
   exportFromFrame: number = 1;
   exportToFrame: number = 1;
+  readonly lastSavedAt: Signal<string | null>;
 
   constructor(
     private toolManagerService: ToolManagerService,
     private exportService: ExportService,
     private projectService: ProjectService,
-  ) {}
+  ) {
+    this.lastSavedAt = this.projectService.lastSavedAt;
+  }
 
   async saveProject(): Promise<void> {
     try {

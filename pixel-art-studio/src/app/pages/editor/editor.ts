@@ -60,6 +60,7 @@ export class Editor {
     const key = event.key.toLowerCase();
     const isUndo = ctrlOrMeta && !event.shiftKey && key === 'z';
     const isRedo = ctrlOrMeta && ((event.shiftKey && key === 'z') || key === 'y');
+    const isSave = ctrlOrMeta && key === 's';
 
     if (isUndo) {
       event.preventDefault();
@@ -72,6 +73,13 @@ export class Editor {
       event.preventDefault();
       event.stopPropagation();
       this.toolManagerService.handleRedo();
+      return;
+    }
+
+    if (isSave && this.isInitialized) {
+      event.preventDefault();
+      event.stopPropagation();
+      void this.projectService.saveProject();
     }
   }
 }

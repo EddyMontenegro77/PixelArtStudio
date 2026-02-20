@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone, signal } from '@angular/core';
 import { ProjectModel } from '../models/project.model';
 import { HistoryManager } from '../models/history-manager.model';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -19,6 +19,7 @@ import { LocalProjectService } from './local-project.service';
 export class ProjectService {
   private projectSubject = new BehaviorSubject<ProjectModel | null>(null);
   project$: Observable<ProjectModel | null> = this.projectSubject.asObservable();
+  readonly lastSavedAt = signal<string | null>(null);
 
   private historyManager!: HistoryManager;
 
@@ -26,6 +27,7 @@ export class ProjectService {
     private projectRepositoryService: ProjectRepositoryService,
     private authService: AuthService,
     private localProjectService: LocalProjectService,
+    private ngZone: NgZone,
   ) {}
 
   createNewProject(width: number, height: number, name: string): void {
@@ -53,10 +55,12 @@ export class ProjectService {
   async saveProject(): Promise<{ target: 'cloud' | 'local'; projectId?: string }> {
     if (this.authService.isAuthenticated()) {
       const projectId = await this.saveProjectToCloud();
+      this.setLastSavedNow();
       return { target: 'cloud', projectId };
     }
 
     this.saveProjectToLocalDraft();
+    this.setLastSavedNow();
     return { target: 'local' };
   }
 
@@ -385,6 +389,20 @@ export class ProjectService {
   ): Promise<Blob | null> {
     return new Promise((resolve) => {
       canvas.toBlob((blob) => resolve(blob), type, quality);
+    });
+  }
+
+  private formatCurrentTime(): string {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  private setLastSavedNow(): void {
+    const time = this.formatCurrentTime();
+    this.ngZone.run(() => {
+      this.lastSavedAt.set(time);
     });
   }
 }

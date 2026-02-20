@@ -2,6 +2,7 @@
   <div class="project-buttons">
     <button class="export-project-btn" type="button" (click)="openExportPopup()">Export</button>
     <button class="save-project-btn" type="button" (click)="saveProject()">Save</button>
+    <small class="saved-time">Saved: {{ lastSavedAt() ?? '--:--' }}</small>
   </div>
 
   <div class="history-buttons">

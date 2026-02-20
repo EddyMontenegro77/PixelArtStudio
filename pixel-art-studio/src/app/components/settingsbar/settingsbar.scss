@@ -9,6 +9,14 @@
 .history-buttons {
   display: flex;
   gap: 8px;
+  align-items: center;
+}
+
+.saved-time {
+  opacity: 0.75;
+  font-size: 0.75rem;
+  color: currentColor;
+  min-width: 72px;
 }
 
 .export-popup-backdrop {
