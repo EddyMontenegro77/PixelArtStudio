@@ -10,6 +10,8 @@ import { GridModel } from '../models/grid.model';
 import { PersistedProjectSaveData, ProjectState } from '../types/projectsave/project-save';
 import { ProjectListItem, ProjectRepositoryService } from './project-repository.service';
 import { renderVisibleLayers } from '../components/canvas/canvas-render.utils';
+import { AuthService } from './auth.service';
+import { LocalProjectService } from './local-project.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +22,11 @@ export class ProjectService {
 
   private historyManager!: HistoryManager;
 
-  constructor(private projectRepositoryService: ProjectRepositoryService) {}
+  constructor(
+    private projectRepositoryService: ProjectRepositoryService,
+    private authService: AuthService,
+    private localProjectService: LocalProjectService,
+  ) {}
 
   createNewProject(width: number, height: number, name: string): void {
     const project = new ProjectModel(width, height, name);
@@ -39,13 +45,45 @@ export class ProjectService {
     );
 
     project.cloudProjectId = projectUuid;
+    this.localProjectService.clearDraft();
     this.emitProjectUpdate();
     return projectUuid;
   }
 
+  async saveProject(): Promise<{ target: 'cloud' | 'local'; projectId?: string }> {
+    if (this.authService.isAuthenticated()) {
+      const projectId = await this.saveProjectToCloud();
+      return { target: 'cloud', projectId };
+    }
+
+    this.saveProjectToLocalDraft();
+    return { target: 'local' };
+  }
+
+  saveProjectToLocalDraft(): void {
+    const project = this.getProject();
+    const projectData = this.toProjectSaveData(project);
+    this.localProjectService.saveDraft(projectData);
+  }
+
+  loadProjectFromLocalDraft(): boolean {
+    const draft = this.localProjectService.loadDraft();
+    if (!draft) return false;
+
+    this.replaceProjectFromPersisted(draft);
+    return true;
+  }
+
+  hasLocalDraft(): boolean {
+    return this.localProjectService.hasDraft();
+  }
+
+  clearLocalDraft(): void {
+    this.localProjectService.clearDraft();
+  }
+
   async loadProjectFromCloud(projectId?: string): Promise<void> {
-    const currentProject = this.getProject();
-    const targetProjectId = projectId ?? currentProject.cloudProjectId;
+    const targetProjectId = projectId ?? this.projectSubject.value?.cloudProjectId;
     if (!targetProjectId) return;
 
     const projectSaveData = await this.projectRepositoryService.getProjectFromCloud(targetProjectId);
@@ -65,6 +103,10 @@ export class ProjectService {
         return { ...project, thumbnailUrl };
       }),
     );
+  }
+
+  async deleteProjectFromCloud(projectId: string): Promise<void> {
+    await this.projectRepositoryService.deleteProjectFromCloud(projectId);
   }
 
   toProjectSaveData(project: ProjectModel = this.getProject()): PersistedProjectSaveData {
@@ -157,6 +199,10 @@ export class ProjectService {
     const project = this.projectSubject.value;
     if (!project) throw new Error('Project not initialized');
     return project;
+  }
+
+  hasProject(): boolean {
+    return this.projectSubject.value !== null;
   }
 
   getHistoryManager(): HistoryManager {
