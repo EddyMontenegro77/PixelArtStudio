@@ -1,6 +1,5 @@
 @if (!isInitialized) {
   <div class="initialization-panel">
-    <button class="theme-toggle" (click)="toggleTheme()">Theme: {{ currentTheme }}</button>
     <input type="text" [(ngModel)]="projectName" placeholder="Project name" minlength="1" />
     <input type="number" [(ngModel)]="width" placeholder="Width" min="1" />
     <input type="number" [(ngModel)]="height" placeholder="Height" min="1" />
@@ -8,7 +7,6 @@
   </div>
 } @else {
   <div class="editor-container">
-    <button class="theme-toggle" (click)="toggleTheme()">Theme: {{ currentTheme }}</button>
     <app-settingsbar class="settings-bar"></app-settingsbar>
     <div class="edition-panel-container">
       <app-toolbar class="toolbar"></app-toolbar>
