@@ -1,8 +1,11 @@
 <div class="user-menu-container">
   <a class="avatar-link" [routerLink]="(isAuthenticated$ | async) ? '/profile' : '/login'">
-    <img [src]="userAvatar" alt="user avatar" />
+    <img [src]="(user$ | async)?.avatar_url || defaultAvatar" alt="user avatar" />
   </a>
   <div class="menu">
+    <button type="button" class="theme-toggle-btn" (click)="toggleTheme()">
+      Theme: {{ currentTheme }}
+    </button>
     @if (isAuthenticated$ | async) {
       <a routerLink="/profile" class="router-link">Profile</a>
       <button type="button" class="logout-btn" (click)="logOut()">Log Out</button>
