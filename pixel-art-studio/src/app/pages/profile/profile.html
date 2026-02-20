@@ -1,1 +1,56 @@
-<p>profile works!</p>
+<div class="profile-container">
+  <header class="profile-header">
+    <div class="avatar-block">
+      <img [src]="user()?.avatar_url || defaultAvatar" alt="User avatar" class="profile-avatar" />
+      <label class="avatar-upload-btn">
+        Change avatar
+        <input type="file" accept="image/*" (change)="handleAvatarSelected($event)" />
+      </label>
+    </div>
+
+    <div class="user-block">
+      @if (!isEditingUsername()) {
+        <h1>{{ user()?.name || 'Profile' }}</h1>
+        <button type="button" (click)="startEditUsername()">Edit username</button>
+      } @else {
+        <input
+          type="text"
+          [value]="usernameDraft()"
+          (input)="updateUsernameDraft(($any($event.target)).value)"
+          maxlength="30"
+        />
+        <div class="username-actions">
+          <button type="button" (click)="saveUsername()">Save</button>
+          <button type="button" (click)="cancelEditUsername()">Cancel</button>
+        </div>
+      }
+      <p>{{ user()?.email }}</p>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <p class="error-message">{{ errorMessage() }}</p>
+  }
+
+  <section class="projects-section">
+    <h2>Your Projects</h2>
+
+    @if (isLoadingProjects()) {
+      <p>Loading projects...</p>
+    } @else if (projects().length === 0) {
+      <p>No cloud projects yet.</p>
+    } @else {
+      <div class="projects-grid">
+        @for (project of projects(); track project.projectId) {
+          <app-project-card
+            [projectName]="project.name"
+            [projectUuid]="project.projectId"
+            [thumbnail]="project.thumbnailUrl"
+            (open)="handleOpenProject($event)"
+            (deleteRequested)="handleDeleteProject($event)"
+          />
+        }
+      </div>
+    }
+  </section>
+</div>
