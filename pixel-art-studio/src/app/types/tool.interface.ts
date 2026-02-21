@@ -6,7 +6,7 @@ export enum ToolType {
   PENCIL = 'Pencil',
   ERASER = 'Eraser',
   FILL = 'Fill',
-  COLOR_PICKER = 'Color Picker',
+  EYEDROPPER = 'Eyedropper',
 }
 
 // Keybinds defined as a map to prevent duplicates
@@ -14,7 +14,7 @@ export const TOOL_KEYBINDS: Record<string, ToolType> = {
   P: ToolType.PENCIL,
   E: ToolType.ERASER,
   F: ToolType.FILL,
-  I: ToolType.COLOR_PICKER,
+  I: ToolType.EYEDROPPER,
 };
 
 export const TOOL_KEYBINDS_BY_TYPE: Record<ToolType, string> = Object.fromEntries(

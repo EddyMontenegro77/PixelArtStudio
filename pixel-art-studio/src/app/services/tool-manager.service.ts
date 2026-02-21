@@ -4,15 +4,17 @@ import { PencilTool } from '../models/tools/pencil-tool.model';
 import { EraserTool } from '../models/tools/eraser-tool.model';
 import { ProjectService } from './project.service';
 import { Subject } from 'rxjs';
+import { EyedropperTool } from '../models/tools/eyedropper-tool.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToolManagerService {
   historyChanged$ = new Subject<void>();
-  private tools: Map<ToolType, Tool> = new Map([
+  private tools: Map<ToolType, Tool> = new Map<ToolType, Tool>([
     [ToolType.PENCIL, new PencilTool()],
     [ToolType.ERASER, new EraserTool()],
+    [ToolType.EYEDROPPER, new EyedropperTool()],
   ]);
   private activeTool: Tool = this.tools.get(ToolType.PENCIL)!;
 
