@@ -39,7 +39,8 @@ export function renderVisibleLayers(
   frame: FrameModel,
   pixelSize: number,
 ): void {
-  const layers = frame.getLayers();
+  // UI order is top -> bottom, but canvas must be drawn bottom -> top.
+  const layers = frame.getLayers().slice().reverse();
   layers.forEach((layer) => {
     if (layer.isVisible()) {
       renderGrid(ctx, layer.getGrid(), pixelSize);
