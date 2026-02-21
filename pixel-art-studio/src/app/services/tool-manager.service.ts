@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool, ToolContext, ToolType } from '../types/tool.interface';
 import { PencilTool } from '../models/tools/pencil-tool.model';
+import { EraserTool } from '../models/tools/eraser-tool.model';
 import { ProjectService } from './project.service';
 import { Subject } from 'rxjs';
 
@@ -9,7 +10,10 @@ import { Subject } from 'rxjs';
 })
 export class ToolManagerService {
   historyChanged$ = new Subject<void>();
-  private tools: Map<ToolType, Tool> = new Map([[ToolType.PENCIL, new PencilTool()]]);
+  private tools: Map<ToolType, Tool> = new Map([
+    [ToolType.PENCIL, new PencilTool()],
+    [ToolType.ERASER, new EraserTool()],
+  ]);
   private activeTool: Tool = this.tools.get(ToolType.PENCIL)!;
 
   private toolContext: ToolContext = {
