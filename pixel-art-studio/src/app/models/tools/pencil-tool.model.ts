@@ -32,7 +32,8 @@ export class PencilTool implements Tool {
   }
 
   private paintPixel(event: PointerEvent, context: ToolContext): boolean {
-    const { activeLayer, historyManager, fillColor, brushSize } = context;
+    const { activeLayer, historyManager, brushSize } = context;
+    const paintColor = this.getPaintColor(context);
     const { x: centerX, y: centerY } = getGridCoordinatesFromEvent(event, context);
     if (!activeLayer || !historyManager) return false;
     const layerGrid = activeLayer.getGrid();
@@ -46,25 +47,29 @@ export class PencilTool implements Tool {
       layerGrid.getHeight(),
       (gridX, gridY) => {
         const oldColor = layerGrid.getPixelColor(gridX, gridY);
-        if (oldColor === fillColor) return;
+        if (oldColor === paintColor) return;
 
         const action = {
           type: 'PAINT',
           x: gridX,
           y: gridY,
           oldColor: oldColor,
-          newColor: fillColor,
+          newColor: paintColor,
           layerId: activeLayer.getId().toString(),
           undo: () => layerGrid.setPixelColor(gridX, gridY, oldColor),
-          redo: () => layerGrid.setPixelColor(gridX, gridY, fillColor),
+          redo: () => layerGrid.setPixelColor(gridX, gridY, paintColor),
         };
 
-        layerGrid.setPixelColor(gridX, gridY, fillColor);
+        layerGrid.setPixelColor(gridX, gridY, paintColor);
         this.strokeBatcher.add(action);
         changed = true;
       },
     );
 
     return changed;
+  }
+
+  protected getPaintColor(context: ToolContext): string {
+    return context.fillColor;
   }
 }
