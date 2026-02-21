@@ -36,6 +36,11 @@ export class ProjectService {
     this.projectSubject.next(project);
   }
 
+  resetProjectState(): void {
+    this.historyManager = new HistoryManager();
+    this.projectSubject.next(null);
+  }
+
   async saveProjectToCloud(): Promise<string> {
     const project = this.getProject();
     const projectData = this.toProjectSaveData(project);
