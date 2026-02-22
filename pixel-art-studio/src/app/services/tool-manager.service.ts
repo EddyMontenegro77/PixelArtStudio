@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { EyedropperTool } from '../models/tools/eyedropper-tool.model';
 import { LineTool } from '../models/tools/line-tool.model';
 import { CircleTool } from '../models/tools/circle-tool.model';
+import { EllipseTool } from '../models/tools/ellipse-tool.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class ToolManagerService {
     [ToolType.PENCIL, new PencilTool()],
     [ToolType.LINE, new LineTool()],
     [ToolType.CIRCLE, new CircleTool()],
+    [ToolType.ELLIPSE, new EllipseTool()],
     [ToolType.ERASER, new EraserTool()],
     [ToolType.EYEDROPPER, new EyedropperTool()],
   ]);
