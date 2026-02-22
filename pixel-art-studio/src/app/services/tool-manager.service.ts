@@ -6,6 +6,7 @@ import { ProjectService } from './project.service';
 import { Subject } from 'rxjs';
 import { EyedropperTool } from '../models/tools/eyedropper-tool.model';
 import { LineTool } from '../models/tools/line-tool.model';
+import { CircleTool } from '../models/tools/circle-tool.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class ToolManagerService {
   private tools: Map<ToolType, Tool> = new Map<ToolType, Tool>([
     [ToolType.PENCIL, new PencilTool()],
     [ToolType.LINE, new LineTool()],
+    [ToolType.CIRCLE, new CircleTool()],
     [ToolType.ERASER, new EraserTool()],
     [ToolType.EYEDROPPER, new EyedropperTool()],
   ]);

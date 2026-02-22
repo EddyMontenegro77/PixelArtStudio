@@ -5,6 +5,7 @@ import { FrameModel } from '../models/frame.model';
 export enum ToolType {
   PENCIL = 'Pencil',
   LINE = 'Line',
+  CIRCLE = 'Circle',
   ERASER = 'Eraser',
   FILL = 'Fill',
   EYEDROPPER = 'Eyedropper',
@@ -14,6 +15,7 @@ export enum ToolType {
 export const TOOL_KEYBINDS: Record<string, ToolType> = {
   P: ToolType.PENCIL,
   L: ToolType.LINE,
+  C: ToolType.CIRCLE,
   E: ToolType.ERASER,
   F: ToolType.FILL,
   I: ToolType.EYEDROPPER,
