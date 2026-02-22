@@ -4,6 +4,7 @@ import { FrameModel } from '../models/frame.model';
 
 export enum ToolType {
   PENCIL = 'Pencil',
+  LINE = 'Line',
   ERASER = 'Eraser',
   FILL = 'Fill',
   EYEDROPPER = 'Eyedropper',
@@ -12,6 +13,7 @@ export enum ToolType {
 // Keybinds defined as a map to prevent duplicates
 export const TOOL_KEYBINDS: Record<string, ToolType> = {
   P: ToolType.PENCIL,
+  L: ToolType.LINE,
   E: ToolType.ERASER,
   F: ToolType.FILL,
   I: ToolType.EYEDROPPER,
@@ -37,4 +39,5 @@ export interface Tool {
   onPointerDown: (event: PointerEvent, context: ToolContext) => boolean;
   onPointerMove: (event: PointerEvent, context: ToolContext) => boolean;
   onPointerUp: (event: PointerEvent, context: ToolContext) => boolean;
+  renderOverlay?: (ctx: CanvasRenderingContext2D, context: ToolContext) => void;
 }

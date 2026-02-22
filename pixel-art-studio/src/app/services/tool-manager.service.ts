@@ -5,6 +5,7 @@ import { EraserTool } from '../models/tools/eraser-tool.model';
 import { ProjectService } from './project.service';
 import { Subject } from 'rxjs';
 import { EyedropperTool } from '../models/tools/eyedropper-tool.model';
+import { LineTool } from '../models/tools/line-tool.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ export class ToolManagerService {
   historyChanged$ = new Subject<void>();
   private tools: Map<ToolType, Tool> = new Map<ToolType, Tool>([
     [ToolType.PENCIL, new PencilTool()],
+    [ToolType.LINE, new LineTool()],
     [ToolType.ERASER, new EraserTool()],
     [ToolType.EYEDROPPER, new EyedropperTool()],
   ]);
@@ -100,5 +102,10 @@ export class ToolManagerService {
   onPointerMove(event: PointerEvent): boolean {
     if (this.isContextReady()) return this.activeTool.onPointerMove(event, this.toolContext);
     return false;
+  }
+
+  renderActiveToolOverlay(ctx: CanvasRenderingContext2D): void {
+    if (!this.isContextReady()) return;
+    this.activeTool.renderOverlay?.(ctx, this.toolContext);
   }
 }

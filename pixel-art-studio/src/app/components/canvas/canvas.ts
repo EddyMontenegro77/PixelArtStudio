@@ -101,6 +101,7 @@ export class Canvas {
 
     renderCheckerboard(this.canvasContext, this.width, this.height, this.pixelSize);
     renderVisibleLayers(this.canvasContext, this.activeFrame, this.pixelSize);
+    this.toolManagerService.renderActiveToolOverlay(this.canvasContext);
     this.renderHover();
   }
 
