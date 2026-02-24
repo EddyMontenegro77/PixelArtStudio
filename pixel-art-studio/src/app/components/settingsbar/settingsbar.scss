@@ -3,13 +3,40 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  padding: 0.35rem 0.75rem 0.25rem;
+  flex-wrap: wrap;
 }
 
+.navigation-buttons,
 .project-buttons,
 .history-buttons {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.compact-btn {
+  min-height: 34px;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.72rem;
+  border-radius: 10px;
+}
+
+.save-project-btn {
+  width: auto;
+  max-width: none;
+  min-width: 84px;
+  min-height: 34px;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 12px;
+}
+
+.navigation-buttons .outline-btn,
+.project-buttons .outline-btn,
+.history-buttons .outline-btn {
+  color: var(--text-card);
 }
 
 .saved-time {
@@ -17,6 +44,12 @@
   font-size: 0.75rem;
   color: currentColor;
   min-width: 72px;
+}
+
+@media (max-width: 860px) {
+  .settingsbar-container {
+    justify-content: center;
+  }
 }
 
 .export-popup-backdrop {

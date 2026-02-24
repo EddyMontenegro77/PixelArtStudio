@@ -1,13 +1,22 @@
 <div class="settingsbar-container">
+  <div class="navigation-buttons">
+    <a class="bg-btn compact-btn" routerLink="/">Return</a>
+    <button class="bg-btn compact-btn" type="button" (click)="toggleTheme()">
+      Theme: {{ currentTheme }}
+    </button>
+  </div>
+
   <div class="project-buttons">
-    <button class="export-project-btn" type="button" (click)="openExportPopup()">Export</button>
-    <button class="save-project-btn" type="button" (click)="saveProject()">Save</button>
+    <button class="bg-btn compact-btn export-project-btn" type="button" (click)="openExportPopup()">
+      Export
+    </button>
+    <button class="cta-btn save-project-btn" type="button" (click)="saveProject()">Save</button>
     <small class="saved-time">Saved: {{ lastSavedAt() ?? '--:--' }}</small>
   </div>
 
   <div class="history-buttons">
-    <button class="history-btn" type="button" (click)="undo()">Undo</button>
-    <button class="history-btn" type="button" (click)="redo()">Redo</button>
+    <button class="bg-btn compact-btn history-btn" type="button" (click)="undo()">Undo</button>
+    <button class="bg-btn compact-btn history-btn" type="button" (click)="redo()">Redo</button>
   </div>
 </div>
 
@@ -17,11 +26,7 @@
       <h4>Export Options</h4>
       <label class="export-field">
         File name
-        <input
-          type="text"
-          [(ngModel)]="exportFilename"
-          placeholder="Optional custom filename"
-        />
+        <input type="text" [(ngModel)]="exportFilename" placeholder="Optional custom filename" />
       </label>
       <label class="export-field">
         Scale
@@ -47,9 +52,7 @@
         Export All Frames (Sprite Sheet)
       </button>
       <button type="button" (click)="exportProject('GIF_ANIMATION')">Export GIF Animation</button>
-      <button type="button" (click)="exportProject('APNG_ANIMATION')">
-        Export APNG Animation
-      </button>
+      <button type="button" (click)="exportProject('APNG_ANIMATION')">Export APNG Animation</button>
       <button type="button" (click)="closeExportPopup()">Cancel</button>
     </div>
   </div>
