@@ -18,8 +18,9 @@
         <input
           type="text"
           [value]="usernameDraft()"
-          (input)="updateUsernameDraft(($any($event.target)).value)"
+          (input)="updateUsernameDraft($any($event.target).value)"
           maxlength="30"
+          class="input-field"
         />
         <div class="username-actions">
           <button type="button" (click)="saveUsername()">Save</button>
@@ -34,7 +35,7 @@
   }
 
   <section class="projects-section">
-    <h2>Your Projects</h2>
+    <h2 class="projects-section-title">My Projects</h2>
 
     @if (isLoadingProjects()) {
       <p>Loading projects...</p>
