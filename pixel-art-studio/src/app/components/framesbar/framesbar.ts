@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { FrameModel } from '../../models/frame.model';
 import { ProjectService } from '../../services/project.service';
 import { AnimationPreview } from '../animation-preview/animation-preview';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-framesbar',
@@ -15,8 +16,12 @@ export class Framesbar {
   frames: FrameModel[] = [];
   activeFrameId: number | null = null;
   isPlaying: boolean = false;
+  isPreviewOpen = false;
 
-  constructor(private projectService: ProjectService) {
+  constructor(
+    private projectService: ProjectService,
+    private themeService: ThemeService,
+  ) {
     this.projectService.project$.subscribe((project) => {
       if (!project) return;
       this.frames = this.projectService.getFrames();
@@ -51,5 +56,30 @@ export class Framesbar {
 
   onPlaybackChanged(isPlaying: boolean): void {
     this.isPlaying = isPlaying;
+  }
+
+  openPreview(): void {
+    this.isPreviewOpen = true;
+    queueMicrotask(() => {
+      this.togglePlaying();
+    });
+  }
+
+  closePreview(): void {
+    if (this.animationPreview && this.isPlaying) {
+      this.animationPreview.togglePlayback();
+    }
+    this.isPreviewOpen = false;
+  }
+
+  getPanelIconPath(name: 'plus' | 'play_pause' | 'minus'): string {
+    const suffix = this.themeService.getTheme() === 'dark' ? 'white' : 'black';
+    return `/icons/${name}_${suffix}.svg`;
+  }
+
+  getAccentIconPath(name: 'plus' | 'play_pause' | 'minus'): string {
+    // bg-btn uses opposite contrast compared to panel buttons
+    const suffix = this.themeService.getTheme() === 'dark' ? 'black' : 'white';
+    return `/icons/${name}_${suffix}.svg`;
   }
 }

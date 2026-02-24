@@ -1,14 +1,19 @@
 .framesbar-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: var(--shadow-sm);
 }
 
 .frames-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
 }
 
 .frame-item {
@@ -16,36 +21,64 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.6rem;
-  border: 1px solid #999;
-  border-radius: 0.25rem;
-  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: var(--panel-2);
   cursor: pointer;
+  flex: 0 0 auto;
+  min-height: 2.2rem;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.frame-item:hover {
+  transform: translateY(-1px);
+  border-color: var(--primary);
 }
 
 .frame-item.active {
-  border-color: #111;
-  background: #f0f0f0;
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--panel-2) 82%, var(--primary) 18%);
+}
+
+.frame-name {
+  font-weight: 700;
+  color: var(--text);
 }
 
 .duration-input-label {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
+  color: var(--text);
 }
 
 .duration-input {
-  width: 4.2rem;
+  width: 4.8rem;
+  height: 1.9rem;
+  padding: 0.25rem 0.45rem;
 }
 
 .remove-frame-btn {
-  border: 1px solid #999;
+  width: 1.35rem;
+  height: 1.35rem;
+  min-width: 0;
   border-radius: 999px;
-  width: 1.1rem;
-  height: 1.1rem;
-  line-height: 1;
   padding: 0;
-  cursor: pointer;
+}
+
+.remove-frame-btn img {
+  width: 0.72rem;
+  height: 0.72rem;
+}
+
+.frames-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .add-frame-btn,
@@ -54,14 +87,59 @@
   align-items: center;
   gap: 0.35rem;
   width: fit-content;
+  border-radius: 10px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.88rem;
 }
 
 .add-frame-btn img {
-  width: 1rem;
-  height: 1rem;
+  width: 0.95rem;
+  height: 0.95rem;
 }
 
 .toggle-play-animation-btn img {
-  width: 1rem;
-  height: 1rem;
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.preview-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 1300;
+}
+
+.preview-popup {
+  width: min(92vw, 460px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: var(--shadow-lg);
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-header h4 {
+  margin: 0;
+  color: var(--text);
+}
+
+.preview-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 740px) {
+  .frames-actions {
+    flex-wrap: wrap;
+  }
 }

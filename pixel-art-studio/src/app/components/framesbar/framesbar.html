@@ -6,10 +6,10 @@
         [class.active]="frame.getId() === activeFrameId"
         (click)="selectFrame(frame.getId())"
       >
-        <span>Frame {{ $index + 1 }}</span>
+        <span class="frame-name">Frame {{ $index + 1 }}</span>
         <label class="duration-input-label">
           <input
-            class="duration-input"
+            class="duration-input input-field"
             type="number"
             min="20"
             max="10000"
@@ -22,29 +22,57 @@
         </label>
         <button
           type="button"
-          class="remove-frame-btn"
+          class="remove-frame-btn icon-btn icon-btn-danger"
           (click)="removeFrame(frame.getId(), $event)"
           title="Remove frame"
         >
-          x
+          <img [src]="getPanelIconPath('minus')" alt="Remove frame" />
         </button>
       </div>
     }
   </div>
 
-  <button type="button" class="add-frame-btn" (click)="addFrame()">
-    <img src="icons/plus_black.svg" alt="Add frame" />
-    Add frame
-  </button>
-  <button
-    type="button"
-    class="toggle-play-animation-btn"
-    (click)="togglePlaying()"
-    [attr.aria-pressed]="isPlaying"
-    [title]="isPlaying ? 'Stop preview' : 'Play preview'"
-  >
-    <img src="icons/play_pause_black.svg" alt="play-pause icon" />
-  </button>
-
-  <app-animation-preview (playbackChanged)="onPlaybackChanged($event)"></app-animation-preview>
+  <div class="frames-actions">
+    <button type="button" class="add-frame-btn bg-btn" (click)="addFrame()">
+      <img [src]="getAccentIconPath('plus')" alt="Add frame" />
+      Add frame
+    </button>
+    <button
+      type="button"
+      class="toggle-play-animation-btn bg-btn"
+      (click)="openPreview()"
+      [attr.aria-pressed]="isPlaying"
+      title="Open preview"
+    >
+      <img [src]="getAccentIconPath('play_pause')" alt="play-pause icon" />
+      Preview
+    </button>
+  </div>
 </div>
+
+@if (isPreviewOpen) {
+  <div class="preview-backdrop" (click)="closePreview()">
+    <div class="preview-popup" (click)="$event.stopPropagation()">
+      <div class="preview-header">
+        <h4>Animation Preview</h4>
+        <button type="button" class="icon-btn" (click)="closePreview()" title="Close preview">
+          x
+        </button>
+      </div>
+
+      <app-animation-preview (playbackChanged)="onPlaybackChanged($event)"></app-animation-preview>
+
+      <div class="preview-actions">
+        <button
+          type="button"
+          class="bg-btn"
+          (click)="togglePlaying()"
+          [attr.aria-pressed]="isPlaying"
+          [title]="isPlaying ? 'Stop preview' : 'Play preview'"
+        >
+          {{ isPlaying ? 'Pause' : 'Play' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
