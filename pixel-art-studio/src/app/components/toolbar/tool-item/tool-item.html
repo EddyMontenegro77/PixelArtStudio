@@ -1,5 +1,6 @@
 <div class="tool-item-container">
-  <button class="item-button" [title]="tooltipText()">
-    <img class="item-icon" [src]="icon()" [alt]="altIcon()" />
+  <button class="item-button icon-btn" [class.active]="isActive()" [title]="tooltipText()">
+    <img class="item-icon" [src]="resolvedIcon()" [alt]="altIcon()" />
+    <span class="keybind-chip">{{ keybind() }}</span>
   </button>
 </div>
