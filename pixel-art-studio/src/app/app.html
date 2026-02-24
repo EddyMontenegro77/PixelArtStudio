@@ -1,7 +1,11 @@
-<header class="top-bar">
-  <a routerLink="/" class="brand">PixelArtStudio</a>
-  <app-user-menu />
-</header>
+@if (!hideAppHeader) {
+  <header class="top-bar">
+    <a routerLink="/" class="brand">PixelArtStudio</a>
+    <div class="top-bar__menu">
+      <app-user-menu />
+    </div>
+  </header>
+}
 <main class="page-content">
   <router-outlet />
 </main>

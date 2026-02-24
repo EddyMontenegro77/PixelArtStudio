@@ -9,7 +9,7 @@ import { Editor } from './pages/editor/editor';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  { path: 'editor', component: Editor },
+  { path: 'editor', component: Editor, data: { hideAppHeader: true } },
   { path: 'login', component: Login, canActivate: [guestGuard] },
   { path: 'signup', component: Signup, canActivate: [guestGuard] },
   { path: 'profile', component: Profile, canActivate: [authGuard] },
