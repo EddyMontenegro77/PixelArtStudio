@@ -3,8 +3,14 @@
   [class.selected]="isSelected()"
   [style.backgroundColor]="color()"
   (click)="onSelect()"
+  [title]="color()"
 >
-  <button type="button" class="remove-color-btn" (click)="onRemove(); $event.stopPropagation()">
+  <button
+    type="button"
+    class="remove-color-btn icon-btn"
+    (click)="onRemove(); $event.stopPropagation()"
+    title="Remove color"
+  >
     x
   </button>
 </div>
