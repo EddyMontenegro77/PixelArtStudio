@@ -3,6 +3,7 @@ import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginCredentials } from '../../../types/auth-interfaces/auth';
+import { ProjectService } from '../../../services/project.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class Login {
 
   constructor(
     private authService: AuthService,
+    private projectService: ProjectService,
     private formBuilder: FormBuilder,
     private router: Router,
   ) {
@@ -43,6 +45,11 @@ export class Login {
       };
 
       await this.authService.logIn(credentials);
+      try {
+        await this.projectService.migrateLocalDraftToCloudForCurrentUser();
+      } catch (migrationError) {
+        console.error('Local draft migration failed after login:', migrationError);
+      }
       await this.router.navigate(['/profile']);
     } catch (error) {
       this.errorMessage.set(this.getLoginErrorMessage(error));
