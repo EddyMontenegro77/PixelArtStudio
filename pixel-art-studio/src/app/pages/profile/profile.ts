@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { User } from '../../types/auth-interfaces/user';
 import { ProjectListItem } from '../../services/project-repository.service';
+import { LoadingService } from '../../services/loading.service';
 
 type ProfileProject = ProjectListItem & { thumbnailUrl: string | null };
 
@@ -29,6 +30,7 @@ export class Profile implements OnInit {
     private projectService: ProjectService,
     private router: Router,
     private destroyRef: DestroyRef,
+    private loadingService: LoadingService,
   ) {
     this.authService.user$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((user) => {
       this.user.set(user);
@@ -46,7 +48,9 @@ export class Profile implements OnInit {
     this.errorMessage.set('');
     this.isLoadingProjects.set(true);
     try {
-      const projects = await this.projectService.listCloudProjectsWithThumbnails();
+      const projects = await this.loadingService.track(
+        this.projectService.listCloudProjectsWithThumbnails(),
+      );
       this.projects.set(projects);
     } catch (error) {
       this.errorMessage.set(error instanceof Error ? error.message : 'Could not load projects.');
@@ -104,7 +108,7 @@ export class Profile implements OnInit {
 
   async handleOpenProject(projectId: string): Promise<void> {
     try {
-      await this.projectService.loadProjectFromCloud(projectId);
+      await this.loadingService.track(this.projectService.loadProjectFromCloud(projectId));
       await this.router.navigate(['/editor']);
     } catch (error) {
       this.errorMessage.set(error instanceof Error ? error.message : 'Could not open project.');
@@ -114,7 +118,9 @@ export class Profile implements OnInit {
   async handleDeleteProject(projectId: string): Promise<void> {
     try {
       await this.projectService.deleteProjectFromCloud(projectId);
-      this.projects.update((projects) => projects.filter((project) => project.projectId !== projectId));
+      this.projects.update((projects) =>
+        projects.filter((project) => project.projectId !== projectId),
+      );
     } catch (error) {
       this.errorMessage.set(error instanceof Error ? error.message : 'Could not delete project.');
     }
