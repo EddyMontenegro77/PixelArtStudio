@@ -8,6 +8,7 @@ export type Theme = 'light' | 'dark';
 export class ThemeService {
   private readonly storageKey = 'pixel-art-studio-theme';
   private readonly themeSignal = signal<Theme>('light');
+  readonly theme = this.themeSignal.asReadonly();
 
   constructor() {
     const saved = this.readStoredTheme();
