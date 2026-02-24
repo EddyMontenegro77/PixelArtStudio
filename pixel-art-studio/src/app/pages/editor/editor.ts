@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
 import { Canvas } from '../../components/canvas/canvas';
 import { ToolManagerService } from '../../services/tool-manager.service';
@@ -7,10 +8,11 @@ import { Toolbar } from '../../components/toolbar/toolbar';
 import { Projectbar } from '../../components/projectbar/projectbar';
 import { Settingsbar } from '../../components/settingsbar/settingsbar';
 import { Framesbar } from '../../components/framesbar/framesbar';
+import { TOOL_KEYBINDS } from '../../types/tool.interface';
 
 @Component({
   selector: 'app-editor',
-  imports: [FormsModule, Canvas, Toolbar, Projectbar, Settingsbar, Framesbar],
+  imports: [FormsModule, RouterLink, Canvas, Toolbar, Projectbar, Settingsbar, Framesbar],
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
 })
@@ -80,6 +82,18 @@ export class Editor {
       event.preventDefault();
       event.stopPropagation();
       void this.projectService.saveProject();
+      return;
+    }
+
+    if (!this.isInitialized || ctrlOrMeta || event.altKey) {
+      return;
+    }
+
+    const toolType = TOOL_KEYBINDS[event.key.toUpperCase()];
+    if (toolType) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toolManagerService.setActiveTool(toolType);
     }
   }
 }

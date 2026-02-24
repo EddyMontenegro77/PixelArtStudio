@@ -1,9 +1,36 @@
 @if (!isInitialized) {
   <div class="initialization-panel">
-    <input type="text" [(ngModel)]="projectName" placeholder="Project name" minlength="1" />
-    <input type="number" [(ngModel)]="width" placeholder="Width" min="1" />
-    <input type="number" [(ngModel)]="height" placeholder="Height" min="1" />
-    <button (click)="initializeCanvas()">Create Canvas</button>
+    <h2 class="init-title">New Project Configuration</h2>
+    <input
+      type="text"
+      [(ngModel)]="projectName"
+      placeholder="Project name"
+      class="project-name input-field"
+      minlength="1"
+    />
+    <p class="canvas-size-title">Canvas size</p>
+    <label class="size-field">
+      <input
+        type="number"
+        [(ngModel)]="width"
+        placeholder="Width"
+        class="size-input input-field"
+        min="1"
+      />
+    </label>
+    <label class="size-field">
+      <input
+        type="number"
+        [(ngModel)]="height"
+        placeholder="Height"
+        class="size-input input-field"
+        min="1"
+      />
+    </label>
+    <div class="init-actions">
+      <button type="button" class="return-home-btn bg-btn" routerLink="/">Cancel</button>
+      <button (click)="initializeCanvas()" class="create-canvas-btn bg-btn">Create Project</button>
+    </div>
   </div>
 } @else {
   <div class="editor-container">
