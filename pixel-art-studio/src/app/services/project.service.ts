@@ -69,6 +69,21 @@ export class ProjectService {
     return { target: 'local' };
   }
 
+  async migrateLocalDraftToCloudForCurrentUser(): Promise<string | null> {
+    if (!this.authService.isAuthenticated()) {
+      return null;
+    }
+
+    const draft = this.localProjectService.loadDraft();
+    if (!draft) {
+      return null;
+    }
+
+    const projectId = await this.projectRepositoryService.saveProjectInCloud(draft);
+    this.localProjectService.clearDraft();
+    return projectId;
+  }
+
   saveProjectToLocalDraft(): void {
     const project = this.getProject();
     const projectData = this.toProjectSaveData(project);
@@ -253,6 +268,17 @@ export class ProjectService {
     this.executeStructuralAction('TOGGLE_LAYER_VISIBILITY', () =>
       activeFrame.toggleLayerVisibility(layerId),
     );
+  }
+
+  renameLayerInActiveFrame(layerId: number, name: string): void {
+    const activeFrame = this.getActiveFrame();
+    this.executeStructuralAction('RENAME_LAYER', () => {
+      const layer = activeFrame.getLayers().find((currentLayer) => currentLayer.getId() === layerId);
+      if (!layer) {
+        throw new Error(`Layer ${layerId} not found in active frame`);
+      }
+      layer.setName(name);
+    });
   }
 
   getActiveFrame(): FrameModel {
