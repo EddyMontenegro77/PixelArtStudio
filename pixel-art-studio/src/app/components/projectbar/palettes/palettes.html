@@ -1,16 +1,16 @@
 <div class="palettes-container">
-  <label class="palette-name-label" for="palette-name">Palette</label>
-  <input
-    id="palette-name"
-    class="palette-name-input"
-    type="text"
-    [(ngModel)]="paletteName"
-    (blur)="updatePaletteName()"
-  />
+  <div class="palettes-header">
+    <span class="palette-name-label">Palette</span>
+    <small class="palette-count">{{ colors.length }} colors</small>
+  </div>
 
   <div class="color-actions">
-    <input class="selected-color-input" type="color" [(ngModel)]="selectedColor" />
-    <button type="button" (click)="addSelectedColor()">Add color</button>
+    <div class="selected-color-wrap">
+      <input class="selected-color-input" type="color" [(ngModel)]="selectedColor" />
+    </div>
+    <button type="button" class="outline-btn add-color-btn" (click)="addSelectedColor()">
+      Add color
+    </button>
   </div>
 
   <div class="colors-grid">
