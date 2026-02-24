@@ -11,7 +11,9 @@
     <div class="user-block">
       @if (!isEditingUsername()) {
         <h1>{{ user()?.name || 'Profile' }}</h1>
-        <button type="button" (click)="startEditUsername()">Edit username</button>
+        <button type="button" class="edit-username-btn" (click)="startEditUsername()">
+          Edit username
+        </button>
       } @else {
         <input
           type="text"
@@ -24,7 +26,6 @@
           <button type="button" (click)="cancelEditUsername()">Cancel</button>
         </div>
       }
-      <p>{{ user()?.email }}</p>
     </div>
   </header>
 

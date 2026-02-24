@@ -1,12 +1,25 @@
 .profile-container {
-  padding: 1.25rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  overflow-x: hidden;
 }
 
 .profile-header {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 1.2rem 1.5rem;
   align-items: center;
-  margin-bottom: 1rem;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  padding: 1.25rem;
+  background: var(--grad-surface);
+  border: 1px solid var(--text);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-card);
 }
 
 .avatar-block {
@@ -14,26 +27,97 @@
   flex-direction: column;
   gap: 0.5rem;
   align-items: center;
+  cursor: pointer;
 }
 
 .profile-avatar {
-  width: 80px;
-  height: 80px;
+  width: 104px;
+  height: 104px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #d6d6d6;
+  border: 1px solid var(--border);
 }
 
 .avatar-upload-btn input {
   display: none;
+  cursor: pointer;
+}
+
+.user-block {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+}
+
+.user-block h1,
+.user-block p {
+  margin: 0;
+}
+
+.user-block h1 {
+  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.edit-username-btn {
+  border: 1px solid var(--primary);
+  background: transparent;
+  color: var(--text-card);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+    color: var(--text);
+    background-color: var(--panel-2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+.username-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.projects-section {
+  width: 100%;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  display: grid;
+  justify-items: center;
+}
+
+.projects-section h2 {
+  margin: 0 0 0.75rem;
+  text-align: center;
+  font-size: clamp(1.9rem, 4.4vw, 2.7rem);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
 }
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 250px));
+  gap: 0.85rem;
+  width: min(100%, 940px);
+  justify-content: center;
 }
 
 .error-message {
   color: #c62828;
+  margin: 0;
+  text-align: center;
 }
