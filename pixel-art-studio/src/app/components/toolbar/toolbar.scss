@@ -1,4 +1,108 @@
 .toolbar-container {
-  background-color: 'yellow';
-  padding: 1rem;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  max-width: 10rem;
+  box-sizing: border-box;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.tool-controls {
+  display: grid;
+  gap: 0.35rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.45rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.brush-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.brush-size-field {
+  position: relative;
+  width: 3.5rem;
+  max-width: 3.5rem;
+}
+
+.brush-size-field::after {
+  content: 'px';
+  position: absolute;
+  right: 0.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.brush-size-input {
+  width: 100%;
+  padding-right: 1.25rem;
+  padding-left: 0.4rem;
+  font-size: 0.86rem;
+  appearance: textfield;
+}
+
+.brush-size-input::-webkit-outer-spin-button,
+.brush-size-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.current-color-display {
+  display: inline-grid;
+  place-items: center;
+  width: fit-content;
+  padding: 0.22rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+
+.color-swatch {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+@media (max-width: 980px) {
+  .toolbar-container {
+    width: 100%;
+    max-width: 22rem;
+    margin: 0 auto;
+  }
+
+  .tools-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tool-controls {
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .brush-label {
+    font-size: 0.78rem;
+  }
+
+  .current-color-display {
+    justify-self: end;
+  }
 }

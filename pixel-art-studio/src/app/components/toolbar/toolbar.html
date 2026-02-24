@@ -1,11 +1,33 @@
 <div class="toolbar-container">
-  @for (item of tools; track $index) {
-    <app-tool-item
-      [name]="item.tool.name"
-      [icon]="item.tool.icon"
-      [keybind]="toolKeybinds[item.type]"
-      (click)="selectTool(item.type)"
-    >
-    </app-tool-item>
-  }
+  <div class="tools-grid">
+    @for (item of tools; track $index) {
+      <app-tool-item
+        [name]="item.tool.name"
+        [icon]="item.tool.icon"
+        [keybind]="toolKeybinds[item.type]"
+        [isActive]="isActiveTool(item.type)"
+        (click)="selectTool(item.type)"
+      >
+      </app-tool-item>
+    }
+  </div>
+
+  <div class="tool-controls">
+    <label class="brush-label" for="brush-size">Brush size</label>
+    <div class="brush-size-field">
+      <input
+        id="brush-size"
+        class="brush-size-input input-field"
+        type="number"
+        [min]="minBrushSize"
+        [max]="maxBrushSize"
+        [value]="getBrushSize()"
+        (input)="onBrushSizeInput($any($event.target).value)"
+      />
+    </div>
+
+    <div class="current-color-display" [title]="'Current color: ' + getCurrentColor()">
+      <span class="color-swatch" [style.backgroundColor]="getCurrentColor()"></span>
+    </div>
+  </div>
 </div>
