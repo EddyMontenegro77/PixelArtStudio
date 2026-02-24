@@ -1,8 +1,26 @@
-.layer-icon {
-  width: 1rem;
-  height: 1rem;
+.layers-container {
+  display: grid;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.frame-indicator {
+  font-weight: 700;
 }
 
 .layers-display {
   overflow: auto;
+  display: grid;
+  gap: 0.45rem;
+  max-height: 300px;
+}
+
+.bottom-menu {
+  display: flex;
+  justify-content: center;
+}
+
+.add-layer-btn {
+  width: 2.2rem;
+  height: 2.2rem;
 }

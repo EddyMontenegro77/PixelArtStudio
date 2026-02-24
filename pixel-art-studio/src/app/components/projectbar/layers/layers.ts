@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ProjectService } from '../../../services/project.service';
 import { LayerModel } from '../../../models/layer.model';
 import { Layer } from './layer/layer';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-layers',
@@ -13,7 +14,10 @@ export class Layers {
   layers: LayerModel[] = [];
   activeLayerId!: number;
 
-  constructor(private projectService: ProjectService) {
+  constructor(
+    private projectService: ProjectService,
+    private themeService: ThemeService,
+  ) {
     this.projectService.project$.subscribe((project) => {
       if (!project) return;
       const frame = project.getActiveFrame();
@@ -44,5 +48,14 @@ export class Layers {
 
   toggleVisibility(layerId: number): void {
     this.projectService.toggleLayerVisibilityInActiveFrame(layerId);
+  }
+
+  renameLayer(payload: { layerId: number; name: string }): void {
+    this.projectService.renameLayerInActiveFrame(payload.layerId, payload.name);
+  }
+
+  getIconPath(name: 'plus'): string {
+    const suffix = this.themeService.getTheme() === 'dark' ? 'white' : 'black';
+    return `/icons/${name}_${suffix}.svg`;
   }
 }
