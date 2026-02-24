@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { SignUpData } from '../../../types/auth-interfaces/auth';
 import { Router } from '@angular/router';
+import { ProjectService } from '../../../services/project.service';
 
 @Component({
   selector: 'app-signup',
@@ -26,6 +27,7 @@ export class Signup {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private projectService: ProjectService,
     private router: Router,
   ) {
     this.signUpForm = this.formBuilder.nonNullable.group(
@@ -73,6 +75,11 @@ export class Signup {
         return;
       }
 
+      try {
+        await this.projectService.migrateLocalDraftToCloudForCurrentUser();
+      } catch (migrationError) {
+        console.error('Local draft migration failed after sign up:', migrationError);
+      }
       await this.router.navigate(['/profile']);
     } catch (error) {
       this.errorMessage.set(this.getSignUpErrorMessage(error));

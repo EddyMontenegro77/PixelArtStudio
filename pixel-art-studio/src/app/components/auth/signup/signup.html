@@ -1,16 +1,19 @@
 <div class="signup-container">
   <form class="signup-form" [formGroup]="signUpForm" (ngSubmit)="trySignUp()">
+    <h2>Sign Up</h2>
+
     <label for="signup-username">Username</label>
     <input
       type="text"
       placeholder="Username"
       id="signup-username"
       name="username"
+      class="input-field"
       formControlName="username"
       required
     />
     @if (signUpForm.controls['username'].touched && signUpForm.controls['username'].invalid) {
-      <small>Invalid username</small>
+      <small class="form-message form-error">Invalid username</small>
     }
 
     <label for="signup-email">Email</label>
@@ -19,11 +22,12 @@
       placeholder="Email"
       id="signup-email"
       name="email"
+      class="input-field"
       formControlName="email"
       required
     />
     @if (signUpForm.controls['email'].touched && signUpForm.controls['email'].invalid) {
-      <small>Invalid email</small>
+      <small class="form-message form-error">Invalid email</small>
     }
 
     <label for="signup-password">Password</label>
@@ -32,11 +36,12 @@
       placeholder="Password"
       id="signup-password"
       name="password"
+      class="input-field"
       formControlName="password"
       required
     />
     @if (signUpForm.controls['password'].touched && signUpForm.controls['password'].invalid) {
-      <small>Invalid password</small>
+      <small class="form-message form-error">Invalid password</small>
     }
 
     <label for="signup-password-verification">Password Verification</label>
@@ -45,6 +50,7 @@
       placeholder="Type your password again"
       id="signup-password-verification"
       name="passwordVerification"
+      class="input-field"
       formControlName="passwordVerification"
       required
     />
@@ -52,22 +58,22 @@
       signUpForm.controls['passwordVerification'].touched &&
       signUpForm.controls['passwordVerification'].invalid
     ) {
-      <small>Invalid password</small>
+      <small class="form-message form-error">Invalid password</small>
     }
     @if (signUpForm.errors?.['passwordMismatch']) {
-      <small>Passwords do not match</small>
+      <small class="form-message form-error">Passwords do not match</small>
     }
 
     @if (errorMessage()) {
-      <small>{{ errorMessage() }}</small>
+      <small class="form-message form-error">{{ errorMessage() }}</small>
     }
     @if (successMessage()) {
-      <small>{{ successMessage() }}</small>
+      <small class="form-message form-success">{{ successMessage() }}</small>
     }
 
     <button
       type="submit"
-      class="signup-submit-btn"
+      class="signup-submit-btn cta-btn"
       [disabled]="signUpForm.invalid || isSubmitting()"
     >
       Sign Up

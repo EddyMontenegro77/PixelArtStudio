@@ -1,0 +1,46 @@
+.signup-container {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.signup-form {
+  width: min(92vw, 380px);
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: var(--shadow-md);
+}
+
+.signup-form h2 {
+  margin: 0 0 0.25rem;
+  text-align: center;
+  color: var(--text);
+}
+
+.signup-form label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.signup-submit-btn {
+  margin-top: 0.25rem;
+  max-width: none;
+}
+
+.form-message {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.form-error {
+  color: #c62828;
+}
+
+.form-success {
+  color: #2e7d32;
+}
