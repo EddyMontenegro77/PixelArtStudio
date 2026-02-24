@@ -2,13 +2,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4rem;
-  border: 1px solid #999;
-  border-radius: 0.25rem;
-  background: #fff;
+  padding: 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel-2);
 }
 
 .animation-canvas {
   image-rendering: pixelated;
   display: block;
+  border-radius: 6px;
 }
