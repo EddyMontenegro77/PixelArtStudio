@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93.57 75.57">
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 161.98 130.68">
   <defs>
     <style>
       .cls-1 {
-        fill: #1c2238;
+        fill: #f24c00;
         font-family: Jersey10-Regular, 'Jersey 10';
-        font-size: 72px;
-        stroke: #f24c00;
+        font-size: 125.21px;
+        stroke: #1c2238;
         stroke-miterlimit: 10;
       }
     </style>
   </defs>
-  <text class="cls-1" transform="translate(.5 55.79)"><tspan x="0" y="0">PxS</tspan></text>
+  <text class="cls-1" transform="translate(.5 96.64)"><tspan x="0" y="0">PxS</tspan></text>
 </svg>
