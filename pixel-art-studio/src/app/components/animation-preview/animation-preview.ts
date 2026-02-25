@@ -11,7 +11,7 @@ import { FrameModel } from '../../models/frame.model';
 import { ProjectService } from '../../services/project.service';
 import { Subscription } from 'rxjs';
 import { renderCheckerboard, renderVisibleLayers } from '../canvas/canvas-render.utils';
-import { GridModel } from '../../models/grid.model';
+import { GridModel } from '../../models/Grid.model';
 
 @Component({
   selector: 'app-animation-preview',

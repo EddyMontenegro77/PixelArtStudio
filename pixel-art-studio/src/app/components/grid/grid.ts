@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import Action from '../../types/action';
+import Action from '../../types/Action';
 import HistoryManager from '../../models/history-manager.model';
-import { GridModel } from '../../models/grid.model';
+import { GridModel } from '../../models/Grid.model';
 
 @Component({
   selector: 'app-grid',

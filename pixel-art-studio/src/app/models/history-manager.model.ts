@@ -1,4 +1,4 @@
-import Action from '../types/action';
+import Action from '../types/Action';
 
 export class HistoryManager {
   private undoStack: Action[] = [];

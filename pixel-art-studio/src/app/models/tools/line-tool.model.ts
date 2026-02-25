@@ -3,7 +3,7 @@ import { Tool, ToolContext } from '../../types/tool.interface';
 import { StrokeBatcher } from '../stroke-bactcher.model';
 import { forEachBrushPixel } from './brush.utils';
 import { getLinePoints } from './line.utils';
-import Action from '../../types/action';
+import Action from '../../types/Action';
 
 export class LineTool implements Tool {
   name: string = 'Line';

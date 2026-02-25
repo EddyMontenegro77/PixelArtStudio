@@ -1,5 +1,5 @@
 import { FrameModel } from '../../models/frame.model';
-import { GridModel } from '../../models/grid.model';
+import { GridModel } from '../../models/Grid.model';
 
 export function renderCheckerboard(
   ctx: CanvasRenderingContext2D,
