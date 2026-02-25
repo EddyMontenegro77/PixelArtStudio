@@ -1,5 +1,5 @@
-import { writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
@@ -26,6 +26,7 @@ const environmentFile = `export const environment = {
 `;
 
 const outputPath = resolve(process.cwd(), 'src/environments/environment.ts');
+mkdirSync(dirname(outputPath), { recursive: true });
 writeFileSync(outputPath, environmentFile, { encoding: 'utf8' });
 
 console.log('[generate-env] src/environments/environment.ts generated for production build.');
