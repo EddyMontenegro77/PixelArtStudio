@@ -2,6 +2,7 @@
   "name": "pixel-art-studio",
   "version": "0.0.0",
   "scripts": {
+    "prebuild": "node scripts/generate-env.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
