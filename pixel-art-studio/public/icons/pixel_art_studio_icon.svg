@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 133.12 160.65">
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 161 161">
   <defs>
     <style>
-      .cls-1, .cls-2 {
+      .cls-1 {
         fill: #f24c00;
+      }
+
+      .cls-1, .cls-2 {
         stroke: #1c2238;
         stroke-miterlimit: 10;
       }
 
       .cls-2 {
+        fill: #e7e7e7;
         font-family: Jersey10-Regular, 'Jersey 10';
-        font-size: 154.15px;
+        font-size: 125.12px;
       }
     </style>
   </defs>
-  <text class="cls-2" transform="translate(.5 118.86)"><tspan x="0" y="0">PS</tspan></text>
-  <g>
-    <rect class="cls-1" x="50.12" y="102.57" width="8.15" height="8.15"/>
-    <rect class="cls-1" x="41.98" y="102.57" width="8.15" height="8.15"/>
-    <rect class="cls-1" x="41.98" y="110.72" width="8.15" height="8.15"/>
-    <rect class="cls-1" x="50.12" y="110.72" width="8.15" height="8.15"/>
-  </g>
+  <rect class="cls-1" x=".5" y=".5" width="160" height="160"/>
+  <text class="cls-2" transform="translate(26.88 111.78)"><tspan x="0" y="0">PS</tspan></text>
 </svg>
