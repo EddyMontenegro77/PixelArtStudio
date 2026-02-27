@@ -24,9 +24,23 @@
     @if (errorMessage()) {
       <small class="form-message form-error">{{ errorMessage() }}</small>
     }
+    @if (verificationMessage()) {
+      <small class="form-message form-success">{{ verificationMessage() }}</small>
+    }
+    @if (recoveryMessage()) {
+      <small class="form-message form-success">{{ recoveryMessage() }}</small>
+    }
 
     <button class="submit-btn cta-btn" type="submit" [disabled]="loginForm.invalid || isSubmitting()">
       Log In
+    </button>
+    <button
+      class="recover-btn outline-btn"
+      type="button"
+      [disabled]="isSubmitting()"
+      (click)="recoverPassword()"
+    >
+      Forgot password?
     </button>
   </form>
 </div>

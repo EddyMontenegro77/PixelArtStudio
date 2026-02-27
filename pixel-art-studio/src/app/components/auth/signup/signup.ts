@@ -70,8 +70,12 @@ export class Signup {
 
       const result = await this.authService.signUp(signUpData);
       if (result.requiresEmailConfirmation) {
-        this.successMessage.set('Check your email to confirm your account.');
-        await this.router.navigate(['/login']);
+        await this.router.navigate(['/login'], {
+          queryParams: {
+            verifyEmail: '1',
+            email: signUpData.email,
+          },
+        });
         return;
       }
 

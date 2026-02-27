@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoginCredentials } from '../../../types/auth-interfaces/auth';
 import { ProjectService } from '../../../services/project.service';
 
@@ -15,17 +15,30 @@ export class Login {
   loginForm: FormGroup;
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
+  readonly recoveryMessage = signal('');
+  readonly verificationMessage = signal('');
 
   constructor(
     private authService: AuthService,
     private projectService: ProjectService,
     private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
     private router: Router,
   ) {
     this.loginForm = this.formBuilder.nonNullable.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
     });
+
+    const verifyEmail = this.activatedRoute.snapshot.queryParamMap.get('verifyEmail');
+    const email = this.activatedRoute.snapshot.queryParamMap.get('email');
+
+    if (verifyEmail === '1') {
+      this.verificationMessage.set('Check your email to confirm your account before logging in.');
+      if (email) {
+        this.loginForm.patchValue({ email });
+      }
+    }
   }
 
   async tryLogIn(): Promise<void> {
@@ -36,6 +49,8 @@ export class Login {
 
     this.isSubmitting.set(true);
     this.errorMessage.set('');
+    this.recoveryMessage.set('');
+    this.verificationMessage.set('');
 
     try {
       const raw = this.loginForm.getRawValue();
@@ -51,6 +66,30 @@ export class Login {
         console.error('Local draft migration failed after login:', migrationError);
       }
       await this.router.navigate(['/profile']);
+    } catch (error) {
+      this.errorMessage.set(this.getLoginErrorMessage(error));
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+
+  async recoverPassword(): Promise<void> {
+    const emailControl = this.loginForm.controls['email'];
+    if (emailControl.invalid) {
+      emailControl.markAsTouched();
+      this.errorMessage.set('Enter a valid email to recover password.');
+      this.recoveryMessage.set('');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.errorMessage.set('');
+    this.recoveryMessage.set('');
+
+    try {
+      const email = this.loginForm.getRawValue().email;
+      await this.authService.recoverPassword(email);
+      this.recoveryMessage.set('Password reset email sent. Check your inbox.');
     } catch (error) {
       this.errorMessage.set(this.getLoginErrorMessage(error));
     } finally {
