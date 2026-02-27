@@ -40,10 +40,9 @@ export class AuthService {
 
   async signUp(signUpData: SignUpData): Promise<SignUpResult> {
     const data = await this.signUpWithAuth(signUpData);
-    await this.upsertUserProfile(data.user?.id, signUpData.username);
 
     if (data.session) {
-      await this.applySession(data.session);
+      await this.applySession(data.session, signUpData.username);
       return { requiresEmailConfirmation: false };
     }
 
@@ -60,7 +59,20 @@ export class AuthService {
   }
 
   async recoverPassword(email: string): Promise<void> {
-    const { error } = await this.supabaseService.supabase.auth.resetPasswordForEmail(email);
+    const redirectTo =
+      typeof window !== 'undefined' ? `${window.location.origin}/reset-password` : undefined;
+
+    const { error } = await this.supabaseService.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+    if (error) throw error;
+  }
+
+  async updatePassword(newPassword: string): Promise<void> {
+    const { error } = await this.supabaseService.supabase.auth.updateUser({
+      password: newPassword,
+    });
+
     if (error) throw error;
   }
 
@@ -252,14 +264,15 @@ export class AuthService {
     await this.applySession(session);
   }
 
-  private async applySession(session: Session | null): Promise<void> {
+  private async applySession(session: Session | null, preferredUsername?: string): Promise<void> {
     if (!session?.user) {
       this.clearAuthState();
       return;
     }
 
     const authUser = session.user;
-    const profile = await this.fetchUserProfile(authUser.id);
+    const existingProfile = await this.fetchUserProfile(authUser.id);
+    const profile = await this.ensureUserProfile(authUser, existingProfile, preferredUsername);
     const avatarUrl = await this.resolveAvatarUrl(profile?.avatar_url ?? null);
     const user = this.mapToAppUser(authUser, profile, avatarUrl);
 
@@ -308,18 +321,45 @@ export class AuthService {
     return data;
   }
 
-  private async upsertUserProfile(userId: string | undefined, username: string): Promise<void> {
-    if (!userId) return;
+  private async ensureUserProfile(
+    authUser: SupabaseAuthUser,
+    currentProfile: UserProfileRow | null,
+    preferredUsername?: string,
+  ): Promise<UserProfileRow | null> {
+    if (currentProfile?.username) {
+      return currentProfile;
+    }
+
+    const metadataUsername = this.readMetadataUsername(authUser);
+    const fallbackName = authUser.email?.split('@')[0] ?? 'user';
+    const username = (preferredUsername ?? metadataUsername ?? fallbackName).trim();
 
     const { error } = await this.supabaseService.supabase.from('user_profile').upsert(
       {
-        user_id: userId,
+        user_id: authUser.id,
         username,
+        avatar_url: currentProfile?.avatar_url ?? null,
       },
       { onConflict: 'user_id' },
     );
 
-    if (error) throw error;
+    if (error) {
+      return {
+        username,
+        avatar_url: currentProfile?.avatar_url ?? null,
+      };
+    }
+
+    return {
+      username,
+      avatar_url: currentProfile?.avatar_url ?? null,
+    };
+  }
+
+  private readMetadataUsername(authUser: SupabaseAuthUser): string | null {
+    const metadata = authUser.user_metadata as { username?: unknown } | null;
+    const value = metadata?.username;
+    return typeof value === 'string' && value.trim() ? value : null;
   }
 
   private mapToAppUser(

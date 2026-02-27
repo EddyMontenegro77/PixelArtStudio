@@ -12,6 +12,7 @@ describe('AuthService', () => {
   const resetPasswordForEmailMock = vi.fn();
   const getSessionMock = vi.fn();
   const onAuthStateChangeMock = vi.fn();
+  const signUpMock = vi.fn();
 
   const supabaseServiceMock = {
     supabase: {
@@ -19,6 +20,7 @@ describe('AuthService', () => {
         getSession: getSessionMock,
         onAuthStateChange: onAuthStateChangeMock,
         resetPasswordForEmail: resetPasswordForEmailMock,
+        signUp: signUpMock,
       },
       from: vi.fn(),
     },
@@ -59,7 +61,12 @@ describe('AuthService', () => {
     await service.recoverPassword('user@example.com');
 
     expect(resetPasswordForEmailMock).toHaveBeenCalledTimes(1);
-    expect(resetPasswordForEmailMock).toHaveBeenCalledWith('user@example.com');
+    expect(resetPasswordForEmailMock).toHaveBeenCalledWith(
+      'user@example.com',
+      expect.objectContaining({
+        redirectTo: expect.stringContaining('/reset-password'),
+      }),
+    );
   });
 
   it('should throw when recoverPassword gets an error from supabase', async () => {
@@ -74,5 +81,52 @@ describe('AuthService', () => {
     }
 
     expect(caughtError).toBe(fakeError);
+  });
+
+  it('should sign up and require email confirmation when no session is returned', async () => {
+    signUpMock.mockResolvedValue({
+      data: {
+        user: { id: 'user-1' },
+        session: null,
+      },
+      error: null,
+    });
+    const applySessionSpy = vi
+      .spyOn(service as any, 'applySession')
+      .mockResolvedValue(undefined);
+
+    const result = await service.signUp({
+      username: 'eddy',
+      email: 'eddy@example.com',
+      password: 'password123',
+    });
+
+    expect(signUpMock).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ requiresEmailConfirmation: true });
+    expect(applySessionSpy).not.toHaveBeenCalled();
+  });
+
+  it('should sign up and apply session when a session is returned', async () => {
+    const fakeSession = { user: { id: 'user-1', email: 'eddy@example.com' } };
+    signUpMock.mockResolvedValue({
+      data: {
+        user: { id: 'user-1' },
+        session: fakeSession,
+      },
+      error: null,
+    });
+    const applySessionSpy = vi
+      .spyOn(service as any, 'applySession')
+      .mockResolvedValue(undefined);
+
+    const result = await service.signUp({
+      username: 'eddy',
+      email: 'eddy@example.com',
+      password: 'password123',
+    });
+
+    expect(signUpMock).toHaveBeenCalledTimes(1);
+    expect(applySessionSpy).toHaveBeenCalledWith(fakeSession, 'eddy');
+    expect(result).toEqual({ requiresEmailConfirmation: false });
   });
 });
