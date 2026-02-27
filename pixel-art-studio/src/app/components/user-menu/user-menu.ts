@@ -13,8 +13,7 @@ import { Theme, ThemeService } from '../../services/theme.service';
 export class UserMenu {
   readonly isAuthenticated$;
   readonly user$;
-  readonly defaultAvatar: string = '/icons/user_icon_black.svg';
-  currentTheme: Theme;
+  readonly theme;
 
   constructor(
     private authService: AuthService,
@@ -22,7 +21,11 @@ export class UserMenu {
   ) {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
     this.user$ = this.authService.user$;
-    this.currentTheme = this.themeService.getTheme();
+    this.theme = this.themeService.theme;
+  }
+
+  get defaultAvatar(): string {
+    return this.theme() === 'light' ? '/icons/user_icon_white.svg' : '/icons/user_icon_black.svg';
   }
 
   async logOut(): Promise<void> {
@@ -30,6 +33,10 @@ export class UserMenu {
   }
 
   toggleTheme(): void {
-    this.currentTheme = this.themeService.toggleTheme();
+    this.themeService.toggleTheme();
+  }
+
+  get currentTheme(): Theme {
+    return this.theme();
   }
 }

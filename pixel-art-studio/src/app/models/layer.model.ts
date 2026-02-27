@@ -1,4 +1,4 @@
-import { GridModel } from './Grid.model';
+import { GridModel } from './grid.model';
 
 export class LayerModel {
   private static layerCounter: number = 0;

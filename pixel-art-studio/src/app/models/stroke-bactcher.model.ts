@@ -1,4 +1,4 @@
-import Action from '../types/Action';
+import Action from '../types/action';
 import HistoryManager from './history-manager.model';
 
 export class StrokeBatcher {

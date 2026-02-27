@@ -1,5 +1,5 @@
 import { getGridCoordinatesFromEvent } from '../../components/canvas/canvas.utils';
-import Action from '../../types/Action';
+import Action from '../../types/action';
 import { Tool, ToolContext } from '../../types/tool.interface';
 import { StrokeBatcher } from '../stroke-bactcher.model';
 import { forEachBrushPixel } from './brush.utils';
