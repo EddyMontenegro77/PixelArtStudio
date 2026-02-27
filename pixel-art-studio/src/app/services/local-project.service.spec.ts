@@ -62,6 +62,14 @@ describe('LocalProjectService', () => {
     expect(result).toBeNull();
   });
 
+  it('should return null when localStorage has no draft', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
+
+    const result = service.loadDraft();
+
+    expect(result).toBeNull();
+  });
+
   it('should clear draft in localStorage', () => {
     const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
 
