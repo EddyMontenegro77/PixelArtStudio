@@ -10,6 +10,7 @@ Pixel Art editor built with Angular + Supabase.
 - Auth flow with email confirmation, login, logout, password recovery.
 - Profile with avatar upload and project cards.
 - Light/Dark theme support.
+- Export PNG, Sprite sheet, GIF and APNG.
 
 ## Stack
 - Angular 21
