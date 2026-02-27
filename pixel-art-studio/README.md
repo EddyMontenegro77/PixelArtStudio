@@ -1,59 +1,66 @@
-# PixelArtStudio
+# Pixel Art Studio
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.3.
+Pixel Art editor built with Angular + Supabase.
 
-## Development server
+## Features
+- Draw and animate pixel art with layers and frames.
+- Toolset: pencil, eraser, line, circle, ellipse, fill, eyedropper.
+- Local draft save when logged out.
+- Cloud save/load/delete when logged in.
+- Auth flow with email confirmation, login, logout, password recovery.
+- Profile with avatar upload and project cards.
+- Light/Dark theme support.
 
-To start a local development server, run:
+## Stack
+- Angular 21
+- TypeScript
+- Supabase Auth + Database + Storage
+- Vitest for unit tests
 
+## Local Setup
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+App runs at `http://localhost:4200`.
 
-## Code scaffolding
+## Environment Variables
+Production build uses:
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+They are injected by `scripts/generate-env.mjs` through the `prebuild` script.
 
+## Scripts
 ```bash
-ng generate component component-name
+npm run start      # ng serve
+npm run build      # ng build (runs prebuild first)
+npm test           # ng test
+npx vitest run src/app/services/local-project.service.spec.ts
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Auth Notes
+- If Supabase `autoconfirm` is OFF, signup returns `requiresEmailConfirmation: true`.
+- User must confirm email before first login.
+- `user_profile` is created/ensured when a valid session exists (RLS-safe flow).
+- Password recovery redirects to `/reset-password`.
 
-```bash
-ng generate --help
-```
+## Deploy (Vercel)
+Use these settings:
+- Root Directory: `pixel-art-studio`
+- Install Command: `npm install`
+- Build Command: `npm run build`
+- Output Directory: `dist/pixel-art-studio/browser`
 
-## Building
+Set environment variables in Vercel project settings:
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Testing Status
+Core service tests are in progress.
+Recommended critical coverage:
+- `LocalProjectService`
+- `ProjectService` save/migrate flows
+- `ProjectRepositoryService` cloud persistence flows
+- `AuthService` signup/login/recovery paths
