@@ -94,6 +94,35 @@ export class FrameModel {
     return this.frameId;
   }
 
+  getOnionSkinMatrix(opacity: string): string[][] {
+    const layers = this.getLayers();
+    const gridHeight = layers[0].getGrid().getPixels().length;
+    const gridWidth = layers[0].getGrid().getPixels()[0].length;
+
+    const onionSkinMatrix: string[][] = Array.from({ length: gridHeight }, () =>
+      new Array<string>(gridWidth).fill('transparent'),
+    );
+
+    for (let layerIndex = 0; layerIndex < layers.length; layerIndex++) {
+      if (!layers[layerIndex].isVisible()) continue;
+      const grid = layers[layerIndex].getGrid();
+      const gridPixels = grid.getPixels().slice();
+
+      for (let pixelRowIndex = 0; pixelRowIndex < gridPixels.length; pixelRowIndex++) {
+        let pixelRow = gridPixels[pixelRowIndex];
+
+        for (let pixelIndex = 0; pixelIndex < pixelRow.length; pixelIndex++) {
+          if (!(pixelRow[pixelIndex] == 'transparent')) {
+            onionSkinMatrix[pixelIndex][pixelRowIndex] = pixelRow[pixelIndex].slice(0, 7) + opacity;
+          }
+          continue;
+        }
+      }
+    }
+
+    return onionSkinMatrix;
+  }
+
   getActiveLayer(): LayerModel {
     const layer = this.layers.find((layer) => layer.getId() === this.activeLayerId);
     if (!layer) throw new Error('No active layer found');

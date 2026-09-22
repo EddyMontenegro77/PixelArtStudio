@@ -9,9 +9,10 @@ import { PaletteModel } from '../models/palette.model';
 import { GridModel } from '../models/grid.model';
 import { PersistedProjectSaveData, ProjectState } from '../types/projectsave/project-save';
 import { ProjectListItem, ProjectRepositoryService } from './project-repository.service';
-import { renderVisibleLayers } from '../components/canvas/canvas-render.utils';
+import { getOpacityHex, renderVisibleLayers } from '../components/canvas/canvas-render.utils';
 import { AuthService } from './auth.service';
 import { LocalProjectService } from './local-project.service';
+import { ThisReceiver } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -110,11 +111,14 @@ export class ProjectService {
     const targetProjectId = projectId ?? this.projectSubject.value?.cloudProjectId;
     if (!targetProjectId) return;
 
-    const projectSaveData = await this.projectRepositoryService.getProjectFromCloud(targetProjectId);
+    const projectSaveData =
+      await this.projectRepositoryService.getProjectFromCloud(targetProjectId);
     this.replaceProjectFromPersisted(projectSaveData, targetProjectId);
   }
 
-  async listCloudProjectsWithThumbnails(): Promise<Array<ProjectListItem & { thumbnailUrl: string | null }>> {
+  async listCloudProjectsWithThumbnails(): Promise<
+    Array<ProjectListItem & { thumbnailUrl: string | null }>
+  > {
     const projects = await this.projectRepositoryService.listProjectsFromCloud();
 
     return Promise.all(
@@ -123,7 +127,9 @@ export class ProjectService {
           return { ...project, thumbnailUrl: null };
         }
 
-        const thumbnailUrl = await this.projectRepositoryService.getThumbnailUrl(project.thumbnailPath);
+        const thumbnailUrl = await this.projectRepositoryService.getThumbnailUrl(
+          project.thumbnailPath,
+        );
         return { ...project, thumbnailUrl };
       }),
     );
@@ -270,10 +276,46 @@ export class ProjectService {
     );
   }
 
+  toggleOnionSkin(): void {
+    const project = this.getProject();
+    project.toggleOnionSkinVisibility();
+    const onionSkinVisibility = project.getOnionSkinVisibility();
+
+    if (onionSkinVisibility) {
+      if (!(this.getFrames().length <= 1)) {
+        this.getOnionSkin();
+      }
+    }
+    this.emitProjectUpdate();
+  }
+
+  setOnionSkinOpacity(opacity: number): void {
+    opacity > 100 ? 50 : opacity;
+    const project = this.getProject();
+    const opacityHex = getOpacityHex(opacity);
+    project.setOnionSkinOpacity(opacityHex);
+    this.emitProjectUpdate();
+  }
+
+  getOnionSkin(): string[][] | null {
+    const project = this.getProject();
+    const frames = this.getFrames();
+    const activeFrame = this.getActiveFrame();
+    const framePosition = frames.indexOf(activeFrame);
+
+    if (framePosition <= 0) {
+      return null;
+    }
+
+    return frames[framePosition - 1].getOnionSkinMatrix(project.getOnionSkinOpacity());
+  }
+
   renameLayerInActiveFrame(layerId: number, name: string): void {
     const activeFrame = this.getActiveFrame();
     this.executeStructuralAction('RENAME_LAYER', () => {
-      const layer = activeFrame.getLayers().find((currentLayer) => currentLayer.getId() === layerId);
+      const layer = activeFrame
+        .getLayers()
+        .find((currentLayer) => currentLayer.getId() === layerId);
       if (!layer) {
         throw new Error(`Layer ${layerId} not found in active frame`);
       }
@@ -323,10 +365,17 @@ export class ProjectService {
     this.emitProjectUpdate();
   }
 
+  getOnionSkinVisibility(): boolean {
+    const project = this.getProject();
+    return project.getOnionSkinVisibility();
+  }
+
   getActivePalette(): PaletteModel {
     const project = this.getProject();
     return project.getPalette();
   }
+
+  getOnionSkinVisible() {}
 
   updateActivePalette(newPalette: PaletteModel): void {
     const project = this.getProject();

@@ -9,7 +9,7 @@ import {
   updatePanToKeepPointUnderCursor,
 } from './canvas.utils';
 import { getBrushBounds } from '../../models/tools/brush.utils';
-import { renderCheckerboard, renderVisibleLayers } from './canvas-render.utils';
+import { renderCheckerboard, renderOnionSkin, renderVisibleLayers } from './canvas-render.utils';
 
 @Component({
   selector: 'app-canvas',
@@ -100,6 +100,14 @@ export class Canvas {
     if (!this.canvasContext || !this.activeFrame) return;
 
     renderCheckerboard(this.canvasContext, this.width, this.height, this.pixelSize);
+
+    if (this.projectService.getOnionSkinVisibility()) {
+      const onionSkinMatrix = this.projectService.getOnionSkin();
+      if (onionSkinMatrix) {
+        renderOnionSkin(this.canvasContext, onionSkinMatrix, this.pixelSize);
+      }
+    }
+
     renderVisibleLayers(this.canvasContext, this.activeFrame, this.pixelSize);
     this.toolManagerService.renderActiveToolOverlay(this.canvasContext);
     this.renderHover();

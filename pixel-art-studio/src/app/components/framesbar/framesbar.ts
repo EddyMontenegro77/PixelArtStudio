@@ -3,10 +3,11 @@ import { FrameModel } from '../../models/frame.model';
 import { ProjectService } from '../../services/project.service';
 import { AnimationPreview } from '../animation-preview/animation-preview';
 import { ThemeService } from '../../services/theme.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-framesbar',
-  imports: [AnimationPreview],
+  imports: [AnimationPreview, FormsModule],
   templateUrl: './framesbar.html',
   styleUrl: './framesbar.scss',
 })
@@ -16,7 +17,10 @@ export class Framesbar {
   frames: FrameModel[] = [];
   activeFrameId: number | null = null;
   isPlaying: boolean = false;
-  isPreviewOpen = false;
+  isPreviewOpen: boolean = false;
+  isOnionSkinActive: boolean = false;
+
+  onionSkinOpacity: number = 50;
 
   constructor(
     private projectService: ProjectService,
@@ -52,6 +56,14 @@ export class Framesbar {
   togglePlaying(): void {
     if (!this.animationPreview) return;
     this.animationPreview.togglePlayback();
+  }
+
+  toggleOnionSkin(): void {
+    this.projectService.toggleOnionSkin();
+  }
+
+  setOnionSkinOpacity(opacity: number): void {
+    this.projectService.setOnionSkinOpacity(opacity);
   }
 
   onPlaybackChanged(isPlaying: boolean): void {

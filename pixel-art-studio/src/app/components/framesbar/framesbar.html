@@ -47,6 +47,37 @@
       <img [src]="getAccentIconPath('play_pause')" alt="play-pause icon" />
       Preview
     </button>
+    <div class="onion-skin-container">
+      <div class="toggle-onion-skin">
+        <input
+          class="input-field"
+          id="onion-skin"
+          type="checkbox"
+          (click)="toggleOnionSkin()"
+          aria-checked="Onion Skin toggled"
+        />
+        <label for="onion-skin">Toggle Onion Skin</label>
+      </div>
+      <div class="opacity-controls">
+        <label>Opacity</label>
+        <input
+          class="opacity-slider"
+          type="range"
+          min="0"
+          max="100"
+          step="5"
+          [(ngModel)]="onionSkinOpacity"
+          (ngModelChange)="setOnionSkinOpacity($event)"
+          [style.background]="
+            'linear-gradient(to right, var(--accent) ' +
+            onionSkinOpacity +
+            '%, var(--border) ' +
+            onionSkinOpacity +
+            '%)'
+          "
+        />
+      </div>
+    </div>
   </div>
 </div>
 

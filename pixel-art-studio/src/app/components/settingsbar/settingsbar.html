@@ -26,11 +26,16 @@
       <h4>Export Options</h4>
       <label class="export-field">
         File name
-        <input type="text" [(ngModel)]="exportFilename" placeholder="Optional custom filename" />
+        <input
+          class="input-field"
+          type="text"
+          [(ngModel)]="exportFilename"
+          placeholder="Optional custom filename"
+        />
       </label>
       <label class="export-field">
         Scale
-        <select [(ngModel)]="exportScale">
+        <select class="input-field" [(ngModel)]="exportScale">
           <option [ngValue]="1">1x</option>
           <option [ngValue]="2">2x</option>
           <option [ngValue]="4">4x</option>
@@ -40,20 +45,26 @@
       <div class="export-range">
         <label class="export-field">
           From frame
-          <input type="number" min="1" [(ngModel)]="exportFromFrame" />
+          <input class="input-field" type="number" min="1" [(ngModel)]="exportFromFrame" />
         </label>
         <label class="export-field">
           To frame
-          <input type="number" min="1" [(ngModel)]="exportToFrame" />
+          <input class="input-field" type="number" min="1" [(ngModel)]="exportToFrame" />
         </label>
       </div>
-      <button type="button" (click)="exportProject('ACTIVE_FRAME')">Export Active Frame</button>
-      <button type="button" (click)="exportProject('ALL_FRAMES')">
+      <button class="bg-btn" type="button" (click)="exportProject('ACTIVE_FRAME')">
+        Export Active Frame
+      </button>
+      <button class="bg-btn" type="button" (click)="exportProject('ALL_FRAMES')">
         Export All Frames (Sprite Sheet)
       </button>
-      <button type="button" (click)="exportProject('GIF_ANIMATION')">Export GIF Animation</button>
-      <button type="button" (click)="exportProject('APNG_ANIMATION')">Export APNG Animation</button>
-      <button type="button" (click)="closeExportPopup()">Cancel</button>
+      <button class="bg-btn" type="button" (click)="exportProject('GIF_ANIMATION')">
+        Export GIF Animation
+      </button>
+      <button class="bg-btn" type="button" (click)="exportProject('APNG_ANIMATION')">
+        Export APNG Animation
+      </button>
+      <button class="bg-btn" type="button" (click)="closeExportPopup()">Cancel</button>
     </div>
   </div>
 }

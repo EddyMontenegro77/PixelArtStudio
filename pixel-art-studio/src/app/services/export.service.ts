@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ProjectService } from './project.service';
 import { FrameModel } from '../models/frame.model';
 import { renderVisibleLayers } from '../components/canvas/canvas-render.utils';
+import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 
 export type ExportMode = 'ACTIVE_FRAME' | 'ALL_FRAMES' | 'GIF_ANIMATION' | 'APNG_ANIMATION';
 export type ExportOptions = {
@@ -75,7 +76,6 @@ export class ExportService {
     Quantize colors => Apply palette =>
     write Frame => Download
     */
-    const { GIFEncoder, quantize, applyPalette } = await import('gifenc');
 
     const project = this.projectService.getProject();
     const scale = this.normalizeScale(options.scale);
@@ -172,6 +172,7 @@ export class ExportService {
     const context = canvas.getContext('2d');
     if (!context) return canvas;
 
+    context.imageSmoothingEnabled = false;
     context.clearRect(0, 0, canvas.width, canvas.height);
     renderVisibleLayers(context, frame, scale);
     return canvas;

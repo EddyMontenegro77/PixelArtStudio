@@ -11,6 +11,8 @@ export class ProjectModel {
   cloudProjectId?: string;
   name: string;
   frames: FrameModel[] = [];
+  isOnionSkinVisible: boolean = false;
+  onionSkinOpacity: string = '80';
   palette: PaletteModel = new PaletteModel('Project Palette');
   activeFrameId: number;
   width: number;
@@ -72,6 +74,22 @@ export class ProjectModel {
       throw new Error(`Frame ${frameId} not found in project`);
     }
     this.activeFrameId = frameId;
+  }
+
+  getOnionSkinVisibility(): boolean {
+    return this.isOnionSkinVisible;
+  }
+
+  setOnionSkinOpacity(opacity: string): void {
+    this.onionSkinOpacity = opacity;
+  }
+
+  getOnionSkinOpacity(): string {
+    return this.onionSkinOpacity;
+  }
+
+  toggleOnionSkinVisibility(): void {
+    this.isOnionSkinVisible = !this.isOnionSkinVisible;
   }
 
   getPalette(): PaletteModel {

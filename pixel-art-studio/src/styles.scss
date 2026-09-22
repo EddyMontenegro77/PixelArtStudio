@@ -335,3 +335,80 @@ body {
 .icon-btn-danger {
   border-color: color-mix(in srgb, var(--accent-strong) 45%, var(--border));
 }
+
+.opacity-slider {
+  appearance: none;
+  width: 140px;
+  height: 0.4rem;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--panel);
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+  }
+
+  &::-moz-range-thumb {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--panel);
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+input[type='checkbox'] {
+  appearance: none;
+  width: 2.6rem;
+  height: 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel-2);
+  cursor: pointer;
+  position: relative;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    top: 50%;
+    left: 0.15rem;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  &:checked {
+    background: var(--accent);
+    border-color: var(--accent-strong);
+
+    &::before {
+      transform: translate(1.15rem, -50%);
+      background: white;
+    }
+  }
+
+  &:hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}

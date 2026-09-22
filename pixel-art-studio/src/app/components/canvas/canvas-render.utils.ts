@@ -47,3 +47,29 @@ export function renderVisibleLayers(
     }
   });
 }
+
+export function renderOnionSkin(
+  context: CanvasRenderingContext2D,
+  matrix: string[][],
+  pixelSize: number,
+): void {
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < matrix[y].length; x++) {
+      const color = matrix[y][x];
+
+      if (color === 'transparent') continue;
+
+      context.fillStyle = color;
+
+      context.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+    }
+  }
+}
+
+export function getOpacityHex(opacityPercent: number): string {
+  if (opacityPercent > 100) {
+    opacityPercent = 50;
+  }
+  const decimal = Math.round((opacityPercent / 100) * 255);
+  return decimal.toString(16).toUpperCase().padStart(2, '0');
+}

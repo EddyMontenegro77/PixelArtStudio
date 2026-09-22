@@ -62,8 +62,8 @@
 }
 
 .export-popup {
-  background: #ffffff;
-  border: 1px solid #d8d8d8;
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px;
   min-width: 260px;

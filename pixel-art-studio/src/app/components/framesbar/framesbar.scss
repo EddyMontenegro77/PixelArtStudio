@@ -143,3 +143,21 @@
     flex-wrap: wrap;
   }
 }
+
+.onion-skin-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.toggle-onion-skin {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.opacity-slider {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+}
