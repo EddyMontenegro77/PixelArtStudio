@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationCancel,
@@ -18,6 +18,7 @@ import { AuthService } from './services/auth.service';
   selector: 'app-root',
   imports: [RouterOutlet, UserMenu, LoadingOverlay, RouterLinkWithHref],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss',
 })
 export class App {

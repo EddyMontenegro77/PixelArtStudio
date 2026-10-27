@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
@@ -8,6 +8,7 @@ import { Theme, ThemeService } from '../../services/theme.service';
   selector: 'app-user-menu',
   imports: [RouterLink, AsyncPipe],
   templateUrl: './user-menu.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './user-menu.scss',
 })
 export class UserMenu {

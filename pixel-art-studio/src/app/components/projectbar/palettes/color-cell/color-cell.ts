@@ -1,9 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-color-cell',
   imports: [],
   templateUrl: './color-cell.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './color-cell.scss',
 })
 export class ColorCell {

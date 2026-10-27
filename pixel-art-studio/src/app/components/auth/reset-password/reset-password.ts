@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -7,6 +7,7 @@ import { AuthService } from '../../../services/auth.service';
   selector: 'app-reset-password',
   imports: [ReactiveFormsModule],
   templateUrl: './reset-password.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reset-password.scss',
 })
 export class ResetPassword {

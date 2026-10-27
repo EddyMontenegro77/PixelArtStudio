@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { UserMenu } from './user-menu';
 
@@ -8,7 +9,8 @@ describe('UserMenu', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserMenu]
+      imports: [UserMenu],
+      providers: [provideRouter([])]
     })
     .compileComponents();
 

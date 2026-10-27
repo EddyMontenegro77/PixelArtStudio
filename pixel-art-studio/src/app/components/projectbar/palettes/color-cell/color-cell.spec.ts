@@ -13,6 +13,9 @@ describe('ColorCell', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(ColorCell);
+    fixture.componentRef.setInput('color', '#000000');
+    fixture.componentRef.setInput('index', 0);
+    fixture.componentRef.setInput('isSelected', false);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

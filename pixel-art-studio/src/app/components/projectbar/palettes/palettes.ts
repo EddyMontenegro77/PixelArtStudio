@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PaletteService } from '../../../services/palette.service';
 import { ColorCell } from './color-cell/color-cell';
@@ -9,6 +9,7 @@ import { ProjectService } from '../../../services/project.service';
   selector: 'app-palettes',
   imports: [FormsModule, ColorCell],
   templateUrl: './palettes.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './palettes.scss',
 })
 export class Palettes {

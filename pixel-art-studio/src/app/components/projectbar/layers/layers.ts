@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectService } from '../../../services/project.service';
 import { LayerModel } from '../../../models/layer.model';
 import { Layer } from './layer/layer';
@@ -8,6 +8,7 @@ import { ThemeService } from '../../../services/theme.service';
   selector: 'app-layers',
   imports: [Layer],
   templateUrl: './layers.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './layers.scss',
 })
 export class Layers {

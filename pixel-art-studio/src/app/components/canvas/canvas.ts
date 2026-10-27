@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { ToolManagerService } from '../../services/tool-manager.service';
 import { ProjectService } from '../../services/project.service';
 import { FrameModel } from '../../models/frame.model';
@@ -15,6 +15,7 @@ import { renderCheckerboard, renderOnionSkin, renderVisibleLayers } from './canv
   selector: 'app-canvas',
   imports: [],
   templateUrl: './canvas.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './canvas.scss',
 })
 export class Canvas {

@@ -6,6 +6,7 @@ import {
   OnDestroy,
   Output,
   EventEmitter,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FrameModel } from '../../models/frame.model';
 import { ProjectService } from '../../services/project.service';
@@ -17,6 +18,7 @@ import { GridModel } from '../../models/grid.model';
   selector: 'app-animation-preview',
   imports: [],
   templateUrl: './animation-preview.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './animation-preview.scss',
 })
 export class AnimationPreview {

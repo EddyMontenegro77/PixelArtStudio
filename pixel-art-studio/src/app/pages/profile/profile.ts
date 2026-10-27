@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectCard } from '../../components/project-card/project-card';
 import { AuthService } from '../../services/auth.service';
 import { ProjectService } from '../../services/project.service';
@@ -14,6 +14,7 @@ type ProfileProject = ProjectListItem & { thumbnailUrl: string | null };
   selector: 'app-profile',
   imports: [ProjectCard],
   templateUrl: './profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile.scss',
 })
 export class Profile implements OnInit {

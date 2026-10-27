@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import Action from '../../types/action';
 import HistoryManager from '../../models/history-manager.model';
 import { GridModel } from '../../models/grid.model';
@@ -7,6 +7,7 @@ import { GridModel } from '../../models/grid.model';
   selector: 'app-grid',
   imports: [],
   templateUrl: './grid.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './grid.scss',
 })
 export class Grid {

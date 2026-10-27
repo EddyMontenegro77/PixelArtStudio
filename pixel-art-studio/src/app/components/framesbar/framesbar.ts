@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FrameModel } from '../../models/frame.model';
 import { ProjectService } from '../../services/project.service';
 import { AnimationPreview } from '../animation-preview/animation-preview';
@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-framesbar',
   imports: [AnimationPreview, FormsModule],
   templateUrl: './framesbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './framesbar.scss',
 })
 export class Framesbar {

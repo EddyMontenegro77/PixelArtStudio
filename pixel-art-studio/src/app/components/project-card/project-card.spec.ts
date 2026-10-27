@@ -13,6 +13,8 @@ describe('ProjectCard', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(ProjectCard);
+    fixture.componentRef.setInput('projectName', 'Test project');
+    fixture.componentRef.setInput('projectUuid', 'test-uuid');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

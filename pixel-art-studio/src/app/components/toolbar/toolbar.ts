@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ToolManagerService } from '../../services/tool-manager.service';
 import { Tool, ToolType, TOOL_KEYBINDS_BY_TYPE } from '../../types/tool.interface';
 import { ToolItem } from './tool-item/tool-item';
@@ -7,6 +7,7 @@ import { ToolItem } from './tool-item/tool-item';
   selector: 'app-toolbar',
   imports: [ToolItem],
   templateUrl: './toolbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './toolbar.scss',
 })
 export class Toolbar {

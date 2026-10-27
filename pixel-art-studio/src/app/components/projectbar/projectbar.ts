@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Layers } from './layers/layers';
 import { Palettes } from './palettes/palettes';
 
@@ -6,6 +6,7 @@ import { Palettes } from './palettes/palettes';
   selector: 'app-projectbar',
   imports: [Layers, Palettes],
   templateUrl: './projectbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './projectbar.scss',
 })
 export class Projectbar {}

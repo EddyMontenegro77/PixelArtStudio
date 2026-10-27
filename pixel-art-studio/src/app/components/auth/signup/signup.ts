@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import {
   AbstractControl,
@@ -17,6 +17,7 @@ import { ProjectService } from '../../../services/project.service';
   selector: 'app-signup',
   imports: [ReactiveFormsModule],
   templateUrl: './signup.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './signup.scss',
 })
 export class Signup {

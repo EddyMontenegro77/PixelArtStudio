@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
@@ -6,6 +6,7 @@ import { ThemeService } from '../../../../services/theme.service';
   standalone: true,
   imports: [],
   templateUrl: './layer.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './layer.scss',
 })
 export class Layer {

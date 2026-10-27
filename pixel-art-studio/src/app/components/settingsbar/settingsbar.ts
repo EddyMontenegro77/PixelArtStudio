@@ -1,4 +1,4 @@
-import { Component, Signal } from '@angular/core';
+import { Component, Signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ToolManagerService } from '../../services/tool-manager.service';
@@ -10,6 +10,7 @@ import { Theme, ThemeService } from '../../services/theme.service';
   selector: 'app-settingsbar',
   imports: [FormsModule, RouterLink],
   templateUrl: './settingsbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settingsbar.scss',
 })
 export class Settingsbar {

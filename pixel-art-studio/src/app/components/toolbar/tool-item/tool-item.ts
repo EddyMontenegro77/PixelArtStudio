@@ -1,10 +1,11 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-tool-item',
   imports: [],
   templateUrl: './tool-item.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tool-item.scss',
 })
 export class ToolItem {

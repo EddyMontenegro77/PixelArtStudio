@@ -13,6 +13,8 @@ describe('Layer', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(Layer);
+    fixture.componentRef.setInput('layerName', 'Layer 1');
+    fixture.componentRef.setInput('layerId', 1);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

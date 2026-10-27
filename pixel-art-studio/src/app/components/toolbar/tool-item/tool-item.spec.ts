@@ -13,6 +13,9 @@ describe('ToolItem', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(ToolItem);
+    fixture.componentRef.setInput('name', 'Brush');
+    fixture.componentRef.setInput('keybind', 'B');
+    fixture.componentRef.setInput('icon', '/icons/brush_black.svg');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

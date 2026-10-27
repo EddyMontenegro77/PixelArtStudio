@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
@@ -14,6 +14,7 @@ import { TOOL_KEYBINDS } from '../../types/tool.interface';
   selector: 'app-editor',
   imports: [FormsModule, RouterLink, Canvas, Toolbar, Projectbar, Settingsbar, Framesbar],
   templateUrl: './editor.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './editor.scss',
 })
 export class Editor {

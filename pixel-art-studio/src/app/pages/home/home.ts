@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
@@ -8,6 +8,7 @@ import { ProjectService } from '../../services/project.service';
   selector: 'app-home',
   imports: [AsyncPipe],
   templateUrl: './home.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './home.scss',
 })
 export class Home {
