@@ -24,5 +24,8 @@
     image-rendering: pixelated;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     background-color: var(--panel);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
 }
